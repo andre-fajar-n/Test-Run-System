@@ -12,11 +12,16 @@ info:
 paths:
     /health:
         get:
-            tags:
-                - health
             summary: Health Check
             operationId: health
             responses:
+                "200":
+                    description: Health Check
+                    schema:
+                        type: object
+                        properties:
+                            message:
+                                type: string
                 default:
                     description: Server Error
                     schema:
@@ -27,28 +32,137 @@ paths:
                             message:
                                 type: string
                                 example: error
-                "200":
-                    description: Health Check
+            security: []
+            description: Check if the App is Running
+            tags:
+                - health
+    /v1/product:
+        post:
+            security: []
+            description: Create new product
+            tags:
+                - product
+            summary: Create New
+            operationId: createProduct
+            parameters:
+                - name: data
+                  in: body
+                  schema:
+                    type: object
+                    required:
+                        - name
+                        - stock
+                    properties:
+                        expiry_date:
+                            description: format date DD-MM-YYYY
+                            type: string
+                            pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
+                        name:
+                            type: string
+                        stock:
+                            type: number
+                            format: uint64
+                            minimum: !!float 1
+            responses:
+                "201":
+                    description: Success create
+                    schema:
+                        allOf:
+                            - type: object
+                              properties:
+                                message:
+                                    type: string
+                            - type: object
+                              properties:
+                                product_id:
+                                    type: number
+                                    format: uint64
+                default:
+                    description: Server Error
                     schema:
                         type: object
                         properties:
+                            code:
+                                type: integer
                             message:
                                 type: string
-            security: []
-            description: Check if the App is Running
+                                example: error
 definitions:
     principal:
         type: object
         properties:
-            user_id:
-                type: number
-                format: uint64
             email:
                 type: string
             expired_at:
                 type: string
+            user_id:
+                format: uint64
+                type: number
+    product:
+        allOf:
+            - type: object
+              required:
+                - id
+              properties:
+                id:
+                    type: integer
+                    format: uint64
+            - type: object
+              properties:
+                created_at:
+                    type: string
+                    format: date-time
+                    x-omitempty: false
+                deleted_at:
+                    type: string
+                    format: date-time
+                    x-omitempty: false
+                updated_at:
+                    type: string
+                    format: date-time
+                    x-omitempty: false
+            - type: object
+              properties:
+                created_by:
+                    x-omitempty: false
+                    type: string
+                deleted_by:
+                    type: string
+                    x-omitempty: false
+                updated_by:
+                    type: string
+                    x-omitempty: false
+            - properties:
+                expiry_date:
+                    type: string
+                    format: date-time
+                name:
+                    type: string
+                    x-omitempty: false
+                stock:
+                    type: number
+                    format: uint64
+                version:
+                    type: number
+                    format: uint64
+              type: object
+    productData:
+        type: object
+        properties:
+            stock:
+                type: number
+                format: uint64
+            version:
+                format: uint64
+                type: number
+            expiry_date:
+                type: string
+                format: date-time
+            name:
+                type: string
+                x-omitempty: false
 securityDefinitions:
     key:
+        type: apiKey
         name: Authorization
         in: header
-        type: apiKey

@@ -15,6 +15,10 @@ paths:
   # health
   /health:
     $ref: ./path/v1/health/health.yml
+  
+  # product
+  /v1/product:
+    $ref: ./path/v1/product/product.yml
 
 definitions:
   principal:
@@ -27,3 +31,26 @@ definitions:
         format: uint64
       expired_at:
         type: string
+
+  product:
+    allOf:
+      - $ref: "./definitions/common.yml#/definitions/ModelIdentifier"
+      - $ref: "./definitions/common.yml#/definitions/ModelTrackTime"
+      - $ref: "./definitions/common.yml#/definitions/ModelTrackBy"
+      - $ref: "#/definitions/productData"
+
+  productData:
+    type: object
+    properties: 
+      name:
+        type: string
+        x-omitempty: false
+      stock:
+        type: number
+        format: uint64
+      version:
+        type: number
+        format: uint64
+      expiry_date:
+        type: string
+        format: date-time

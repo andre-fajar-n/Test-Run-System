@@ -7,6 +7,7 @@ import (
 	"testrunsystem/gen/restapi"
 	"testrunsystem/gen/restapi/operations"
 	"testrunsystem/internal/handlers"
+	"testrunsystem/internal/repositories"
 	"testrunsystem/internal/rest"
 	"testrunsystem/runtime"
 
@@ -64,7 +65,9 @@ func Main() {
 
 	rt := runtime.NewRuntime()
 
-	h := handlers.NewHandler()
+	productRepo := repositories.NewRepository(*rt)
+
+	h := handlers.NewHandler(*rt, productRepo)
 
 	rest.Authorization(rt, api)
 	rest.Route(rt, api, h)

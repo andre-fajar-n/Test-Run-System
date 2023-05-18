@@ -20,6 +20,7 @@ import (
 	"github.com/go-openapi/swag"
 
 	"testrunsystem/gen/restapi/operations/health"
+	"testrunsystem/gen/restapi/operations/product"
 )
 
 // NewServerAPI creates a new Server instance
@@ -45,6 +46,9 @@ func NewServerAPI(spec *loads.Document) *ServerAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
+		ProductCreateProductHandler: product.CreateProductHandlerFunc(func(params product.CreateProductParams) middleware.Responder {
+			return middleware.NotImplemented("operation product.CreateProduct has not yet been implemented")
+		}),
 		HealthHealthHandler: health.HealthHandlerFunc(func(params health.HealthParams) middleware.Responder {
 			return middleware.NotImplemented("operation health.Health has not yet been implemented")
 		}),
@@ -87,6 +91,8 @@ type ServerAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// ProductCreateProductHandler sets the operation handler for the create product operation
+	ProductCreateProductHandler product.CreateProductHandler
 	// HealthHealthHandler sets the operation handler for the health operation
 	HealthHealthHandler health.HealthHandler
 
@@ -169,6 +175,9 @@ func (o *ServerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.ProductCreateProductHandler == nil {
+		unregistered = append(unregistered, "product.CreateProductHandler")
+	}
 	if o.HealthHealthHandler == nil {
 		unregistered = append(unregistered, "health.HealthHandler")
 	}
@@ -262,6 +271,10 @@ func (o *ServerAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/v1/product"] = product.NewCreateProduct(o.context, o.ProductCreateProductHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

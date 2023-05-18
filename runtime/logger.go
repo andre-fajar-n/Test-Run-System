@@ -2,6 +2,8 @@ package runtime
 
 import (
 	"os"
+	"reflect"
+	"runtime"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -18,4 +20,8 @@ func (r *Runtime) logger() *Runtime {
 	r.Logger = logger
 
 	return r
+}
+
+func (r *Runtime) GetFuncName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 }

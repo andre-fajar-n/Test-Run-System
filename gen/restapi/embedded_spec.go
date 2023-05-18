@@ -72,6 +72,86 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product": {
+      "post": {
+        "security": [],
+        "description": "Create new product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Create New",
+        "operationId": "createProduct",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "stock"
+              ],
+              "properties": {
+                "expiry_date": {
+                  "description": "format date DD-MM-YYYY",
+                  "type": "string",
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\\d\\d$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "stock": {
+                  "type": "number",
+                  "format": "uint64",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success create",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "product_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -85,6 +165,101 @@ func init() {
           "type": "string"
         },
         "user_id": {
+          "type": "number",
+          "format": "uint64"
+        }
+      }
+    },
+    "product": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "deleted_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "deleted_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "updated_by": {
+              "type": "string",
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expiry_date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "name": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "stock": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "version": {
+              "type": "number",
+              "format": "uint64"
+            }
+          }
+        }
+      ]
+    },
+    "productData": {
+      "type": "object",
+      "properties": {
+        "expiry_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "x-omitempty": false
+        },
+        "stock": {
+          "type": "number",
+          "format": "uint64"
+        },
+        "version": {
           "type": "number",
           "format": "uint64"
         }
@@ -154,6 +329,86 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product": {
+      "post": {
+        "security": [],
+        "description": "Create new product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Create New",
+        "operationId": "createProduct",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "stock"
+              ],
+              "properties": {
+                "expiry_date": {
+                  "description": "format date DD-MM-YYYY",
+                  "type": "string",
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\\d\\d$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "stock": {
+                  "type": "number",
+                  "format": "uint64",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success create",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "product_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -167,6 +422,101 @@ func init() {
           "type": "string"
         },
         "user_id": {
+          "type": "number",
+          "format": "uint64"
+        }
+      }
+    },
+    "product": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "deleted_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "deleted_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "updated_by": {
+              "type": "string",
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expiry_date": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "name": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "stock": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "version": {
+              "type": "number",
+              "format": "uint64"
+            }
+          }
+        }
+      ]
+    },
+    "productData": {
+      "type": "object",
+      "properties": {
+        "expiry_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "name": {
+          "type": "string",
+          "x-omitempty": false
+        },
+        "stock": {
+          "type": "number",
+          "format": "uint64"
+        },
+        "version": {
           "type": "number",
           "format": "uint64"
         }

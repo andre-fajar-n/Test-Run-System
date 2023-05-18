@@ -1,0 +1,41 @@
+post:
+  tags: [product]
+  summary: 'Create New'
+  description: 'Create new product'
+  operationId: createProduct
+  security: []
+  parameters:
+    - name: data
+      in: body
+      schema:
+        type: object
+        required:
+          - "name"
+          - "stock"
+        properties: 
+          name:
+            type: string
+          stock:
+            type: number
+            format: uint64
+            minimum: 1
+          expiry_date:
+            type: string
+            description: format date DD-MM-YYYY
+            pattern: '^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$'
+
+  responses:
+    201:
+      description: 'Success create'
+      schema:
+        allOf:
+          - $ref: './../../../definitions/common.yml#/definitions/Success'
+          - type: object
+            properties:
+              product_id:
+                type: number
+                format: uint64
+    default:
+      schema:
+        $ref: './../../../definitions/common.yml#/definitions/Error'
+      description: Server Error

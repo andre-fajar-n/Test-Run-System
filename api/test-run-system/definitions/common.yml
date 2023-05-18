@@ -3,15 +3,30 @@ definitions:
     type: object
     properties:
       created_at:
-        type: integer
+        type: string
         format: date-time
         x-omitempty: false
-        x-go-custom-tag: gorm:"type:int;autoCreateTime"
       updated_at:
-        type: integer
+        type: string
         format: date-time
         x-omitempty: false
-        x-go-custom-tag: gorm:"type:int;autoUpdateTime"
+      deleted_at:
+        type: string
+        format: date-time
+        x-omitempty: false
+  
+  ModelTrackBy:
+    type: object
+    properties:
+      created_by:
+        type: string
+        x-omitempty: false
+      updated_by:
+        type: string
+        x-omitempty: false
+      deleted_by:
+        type: string
+        x-omitempty: false
 
   ModelIdentifier:
     type: object
@@ -21,7 +36,6 @@ definitions:
       id:
         type: integer
         format: uint64
-        x-go-custom-tag: gorm:"type:int auto_increment;primaryKey"
 
   Error:
     type: object
