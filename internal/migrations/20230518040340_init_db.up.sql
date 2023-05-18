@@ -17,7 +17,8 @@ create index idx_product_lower_name on product (lower(name));
 create table if not exists product_activity_history (
     id serial primary key,
     product_id integer not null,
-    action varchar(1024),
+    type varchar(10),
+    note varchar(1024),
     created_at timestamptz not null default now(),
     created_by varchar(10),
     constraint fk_product foreign key(product_id) references product(id) on delete restrict on update restrict

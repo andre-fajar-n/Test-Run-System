@@ -19,6 +19,9 @@ paths:
   # product
   /v1/product:
     $ref: ./path/v1/product/product.yml
+  
+  /v1/product/{product_id}:
+    $ref: ./path/v1/product/product_id.yml
 
 definitions:
   principal:
@@ -68,7 +71,9 @@ definitions:
       product_id:
         type: number
         format: uint64
-      action:
+      note:
+        type: string
+      type:
         type: string
       created_at:
         type: string

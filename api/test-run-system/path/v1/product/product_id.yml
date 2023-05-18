@@ -1,0 +1,32 @@
+put:
+  tags: [product]
+  summary: 'Update'
+  description: 'Update existing product'
+  operationId: updateProduct
+  security: []
+  parameters:
+    - $ref: "./../../../parameters/product.yml#/parameters/product_id"
+    - name: data
+      in: body
+      schema:
+        type: object
+        required:
+          - "name"
+        properties: 
+          name:
+            type: string
+          expiry_date:
+            type: string
+            description: format date DD-MM-YYYY
+            pattern: '^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$'
+
+  responses:
+    201:
+      description: 'Success update'
+      schema:
+        allOf:
+          - $ref: './../../../definitions/common.yml#/definitions/Success'
+    default:
+      schema:
+        $ref: './../../../definitions/common.yml#/definitions/Error'
+      description: Server Error

@@ -23,15 +23,15 @@ type ProductActivityHistory struct {
 	// Required: true
 	ID *uint64 `json:"id"`
 
-	// action
-	Action string `json:"action,omitempty"`
-
 	// created at
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"created_at"`
 
 	// created by
 	CreatedBy string `json:"created_by"`
+
+	// note
+	Note string `json:"note,omitempty"`
 
 	// product
 	Product struct {
@@ -77,6 +77,9 @@ type ProductActivityHistory struct {
 
 	// product id
 	ProductID uint64 `json:"product_id,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -93,11 +96,11 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 
 	// AO1
 	var dataAO1 struct {
-		Action string `json:"action,omitempty"`
-
 		CreatedAt strfmt.DateTime `json:"created_at"`
 
 		CreatedBy string `json:"created_by"`
+
+		Note string `json:"note,omitempty"`
 
 		Product struct {
 
@@ -141,20 +144,24 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 		} `json:"product,omitempty"`
 
 		ProductID uint64 `json:"product_id,omitempty"`
+
+		Type string `json:"type,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
 		return err
 	}
 
-	m.Action = dataAO1.Action
-
 	m.CreatedAt = dataAO1.CreatedAt
 
 	m.CreatedBy = dataAO1.CreatedBy
 
+	m.Note = dataAO1.Note
+
 	m.Product = dataAO1.Product
 
 	m.ProductID = dataAO1.ProductID
+
+	m.Type = dataAO1.Type
 
 	return nil
 }
@@ -175,11 +182,11 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 	}
 	_parts = append(_parts, jsonDataAO0)
 	var dataAO1 struct {
-		Action string `json:"action,omitempty"`
-
 		CreatedAt strfmt.DateTime `json:"created_at"`
 
 		CreatedBy string `json:"created_by"`
+
+		Note string `json:"note,omitempty"`
 
 		Product struct {
 
@@ -223,17 +230,21 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 		} `json:"product,omitempty"`
 
 		ProductID uint64 `json:"product_id,omitempty"`
-	}
 
-	dataAO1.Action = m.Action
+		Type string `json:"type,omitempty"`
+	}
 
 	dataAO1.CreatedAt = m.CreatedAt
 
 	dataAO1.CreatedBy = m.CreatedBy
 
+	dataAO1.Note = m.Note
+
 	dataAO1.Product = m.Product
 
 	dataAO1.ProductID = m.ProductID
+
+	dataAO1.Type = m.Type
 
 	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
 	if errAO1 != nil {

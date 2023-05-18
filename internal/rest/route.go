@@ -20,19 +20,36 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 	})
 
 	// product
-	api.ProductCreateProductHandler = product.CreateProductHandlerFunc(func(cpp product.CreateProductParams) middleware.Responder {
-		productID, err := apiHandler.CreateProduct(context.Background(), &cpp)
-		if err != nil {
-			errRes := rt.GetError(err)
-			return product.NewCreateProductDefault(int(errRes.Code())).WithPayload(&product.CreateProductDefaultBody{
-				Code:    int64(errRes.Code()),
-				Message: errRes.Error(),
-			})
-		}
+	{
+		api.ProductCreateProductHandler = product.CreateProductHandlerFunc(func(cpp product.CreateProductParams) middleware.Responder {
+			productID, err := apiHandler.CreateProduct(context.Background(), &cpp)
+			if err != nil {
+				errRes := rt.GetError(err)
+				return product.NewCreateProductDefault(int(errRes.Code())).WithPayload(&product.CreateProductDefaultBody{
+					Code:    int64(errRes.Code()),
+					Message: errRes.Error(),
+				})
+			}
 
-		return product.NewCreateProductCreated().WithPayload(&product.CreateProductCreatedBody{
-			Message:   "success create product",
-			ProductID: *productID,
+			return product.NewCreateProductCreated().WithPayload(&product.CreateProductCreatedBody{
+				Message:   "success create product",
+				ProductID: *productID,
+			})
 		})
-	})
+
+		api.ProductUpdateProductHandler = product.UpdateProductHandlerFunc(func(upp product.UpdateProductParams) middleware.Responder {
+			err := apiHandler.UpdateProduct(context.Background(), &upp)
+			if err != nil {
+				errRes := rt.GetError(err)
+				return product.NewUpdateProductDefault(int(errRes.Code())).WithPayload(&product.UpdateProductDefaultBody{
+					Code:    int64(errRes.Code()),
+					Message: errRes.Error(),
+				})
+			}
+
+			return product.NewUpdateProductCreated().WithPayload(&product.UpdateProductCreatedBody{
+				Message: "success update product",
+			})
+		})
+	}
 }

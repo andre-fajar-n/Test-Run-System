@@ -152,6 +152,80 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product/{product_id}": {
+      "put": {
+        "security": [],
+        "description": "Update existing product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Update",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "expiry_date": {
+                  "description": "format date DD-MM-YYYY",
+                  "type": "string",
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\\d\\d$"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -261,9 +335,6 @@ func init() {
         {
           "type": "object",
           "properties": {
-            "action": {
-              "type": "string"
-            },
             "created_at": {
               "type": "string",
               "format": "date-time",
@@ -272,6 +343,9 @@ func init() {
             "created_by": {
               "type": "string",
               "x-omitempty": false
+            },
+            "note": {
+              "type": "string"
             },
             "product": {
               "allOf": [
@@ -350,6 +424,9 @@ func init() {
             "product_id": {
               "type": "number",
               "format": "uint64"
+            },
+            "type": {
+              "type": "string"
             }
           }
         }
@@ -358,9 +435,6 @@ func init() {
     "productActivityHistoryData": {
       "type": "object",
       "properties": {
-        "action": {
-          "type": "string"
-        },
         "created_at": {
           "type": "string",
           "format": "date-time",
@@ -369,6 +443,9 @@ func init() {
         "created_by": {
           "type": "string",
           "x-omitempty": false
+        },
+        "note": {
+          "type": "string"
         },
         "product": {
           "allOf": [
@@ -447,6 +524,9 @@ func init() {
         "product_id": {
           "type": "number",
           "format": "uint64"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },
@@ -615,6 +695,80 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product/{product_id}": {
+      "put": {
+        "security": [],
+        "description": "Update existing product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Update",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "expiry_date": {
+                  "description": "format date DD-MM-YYYY",
+                  "type": "string",
+                  "pattern": "^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\\d\\d$"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -724,9 +878,6 @@ func init() {
         {
           "type": "object",
           "properties": {
-            "action": {
-              "type": "string"
-            },
             "created_at": {
               "type": "string",
               "format": "date-time",
@@ -735,6 +886,9 @@ func init() {
             "created_by": {
               "type": "string",
               "x-omitempty": false
+            },
+            "note": {
+              "type": "string"
             },
             "product": {
               "allOf": [
@@ -813,6 +967,9 @@ func init() {
             "product_id": {
               "type": "number",
               "format": "uint64"
+            },
+            "type": {
+              "type": "string"
             }
           }
         }
@@ -821,9 +978,6 @@ func init() {
     "productActivityHistoryData": {
       "type": "object",
       "properties": {
-        "action": {
-          "type": "string"
-        },
         "created_at": {
           "type": "string",
           "format": "date-time",
@@ -832,6 +986,9 @@ func init() {
         "created_by": {
           "type": "string",
           "x-omitempty": false
+        },
+        "note": {
+          "type": "string"
         },
         "product": {
           "allOf": [
@@ -910,6 +1067,9 @@ func init() {
         "product_id": {
           "type": "number",
           "format": "uint64"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },

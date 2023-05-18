@@ -1,0 +1,9 @@
+parameters:
+  product_id:
+    description: product_id
+    name: product_id
+    in: path
+    type: integer
+    required: true
+    format: uint64
+    default: 1

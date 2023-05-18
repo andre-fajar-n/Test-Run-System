@@ -19,15 +19,15 @@ import (
 // swagger:model productActivityHistoryData
 type ProductActivityHistoryData struct {
 
-	// action
-	Action string `json:"action,omitempty"`
-
 	// created at
 	// Format: date-time
 	CreatedAt strfmt.DateTime `json:"created_at"`
 
 	// created by
 	CreatedBy string `json:"created_by"`
+
+	// note
+	Note string `json:"note,omitempty"`
 
 	// product
 	Product struct {
@@ -73,6 +73,9 @@ type ProductActivityHistoryData struct {
 
 	// product id
 	ProductID uint64 `json:"product_id,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
 }
 
 // Validate validates this product activity history data
