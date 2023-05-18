@@ -20,14 +20,17 @@ type (
 func NewHandler(
 	rt runtime.Runtime,
 	productRepo repositories.Product,
+	productActivityHistoryRepo repositories.ProductActivityHistory,
 ) Handler {
 	return &handler{
 		rt,
 		productRepo,
+		productActivityHistoryRepo,
 	}
 }
 
 type handler struct {
-	runtime     runtime.Runtime
-	productRepo repositories.Product
+	runtime                    runtime.Runtime
+	productRepo                repositories.Product
+	productActivityHistoryRepo repositories.ProductActivityHistory
 }

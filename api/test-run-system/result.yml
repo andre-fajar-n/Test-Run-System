@@ -7,21 +7,20 @@ schemes:
     - http
 swagger: "2.0"
 info:
-    version: 1.0.0
     title: Test Run System
+    version: 1.0.0
 paths:
     /health:
         get:
-            summary: Health Check
             operationId: health
             responses:
                 "200":
                     description: Health Check
                     schema:
-                        type: object
                         properties:
                             message:
                                 type: string
+                        type: object
                 default:
                     description: Server Error
                     schema:
@@ -36,9 +35,9 @@ paths:
             description: Check if the App is Running
             tags:
                 - health
+            summary: Health Check
     /v1/product:
         post:
-            security: []
             description: Create new product
             tags:
                 - product
@@ -54,9 +53,9 @@ paths:
                         - stock
                     properties:
                         expiry_date:
+                            pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
                             description: format date DD-MM-YYYY
                             type: string
-                            pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
                         name:
                             type: string
                         stock:
@@ -87,6 +86,7 @@ paths:
                             message:
                                 type: string
                                 example: error
+            security: []
 definitions:
     principal:
         type: object
@@ -132,7 +132,8 @@ definitions:
                 updated_by:
                     type: string
                     x-omitempty: false
-            - properties:
+            - type: object
+              properties:
                 expiry_date:
                     type: string
                     format: date-time
@@ -145,24 +146,157 @@ definitions:
                 version:
                     type: number
                     format: uint64
-              type: object
+    productActivityHistory:
+        allOf:
+            - type: object
+              required:
+                - id
+              properties:
+                id:
+                    type: integer
+                    format: uint64
+            - type: object
+              properties:
+                created_by:
+                    x-omitempty: false
+                    type: string
+                product:
+                    allOf:
+                        - properties:
+                            id:
+                                type: integer
+                                format: uint64
+                          type: object
+                          required:
+                            - id
+                        - type: object
+                          properties:
+                            created_at:
+                                type: string
+                                format: date-time
+                                x-omitempty: false
+                            deleted_at:
+                                type: string
+                                format: date-time
+                                x-omitempty: false
+                            updated_at:
+                                type: string
+                                format: date-time
+                                x-omitempty: false
+                        - type: object
+                          properties:
+                            created_by:
+                                type: string
+                                x-omitempty: false
+                            deleted_by:
+                                type: string
+                                x-omitempty: false
+                            updated_by:
+                                type: string
+                                x-omitempty: false
+                        - type: object
+                          properties:
+                            version:
+                                type: number
+                                format: uint64
+                            expiry_date:
+                                type: string
+                                format: date-time
+                            name:
+                                x-omitempty: false
+                                type: string
+                            stock:
+                                type: number
+                                format: uint64
+                product_id:
+                    type: number
+                    format: uint64
+                action:
+                    type: string
+                created_at:
+                    format: date-time
+                    x-omitempty: false
+                    type: string
+    productActivityHistoryData:
+        type: object
+        properties:
+            created_by:
+                type: string
+                x-omitempty: false
+            product:
+                allOf:
+                    - type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                            type: integer
+                            format: uint64
+                    - type: object
+                      properties:
+                        created_at:
+                            type: string
+                            format: date-time
+                            x-omitempty: false
+                        deleted_at:
+                            type: string
+                            format: date-time
+                            x-omitempty: false
+                        updated_at:
+                            type: string
+                            format: date-time
+                            x-omitempty: false
+                    - type: object
+                      properties:
+                        created_by:
+                            x-omitempty: false
+                            type: string
+                        deleted_by:
+                            type: string
+                            x-omitempty: false
+                        updated_by:
+                            type: string
+                            x-omitempty: false
+                    - type: object
+                      properties:
+                        version:
+                            type: number
+                            format: uint64
+                        expiry_date:
+                            type: string
+                            format: date-time
+                        name:
+                            type: string
+                            x-omitempty: false
+                        stock:
+                            type: number
+                            format: uint64
+            product_id:
+                type: number
+                format: uint64
+            action:
+                type: string
+            created_at:
+                type: string
+                format: date-time
+                x-omitempty: false
     productData:
         type: object
         properties:
-            stock:
-                type: number
-                format: uint64
-            version:
-                format: uint64
-                type: number
             expiry_date:
                 type: string
                 format: date-time
             name:
                 type: string
                 x-omitempty: false
+            stock:
+                type: number
+                format: uint64
+            version:
+                type: number
+                format: uint64
 securityDefinitions:
     key:
+        in: header
         type: apiKey
         name: Authorization
-        in: header

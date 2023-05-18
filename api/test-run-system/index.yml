@@ -54,3 +54,26 @@ definitions:
       expiry_date:
         type: string
         format: date-time
+
+  productActivityHistory:
+    allOf:
+      - $ref: "./definitions/common.yml#/definitions/ModelIdentifier"
+      - $ref: "#/definitions/productActivityHistoryData"
+
+  productActivityHistoryData:
+    type: object
+    properties: 
+      product:
+        $ref: "#/definitions/product"
+      product_id:
+        type: number
+        format: uint64
+      action:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        x-omitempty: false
+      created_by:
+        type: string
+        x-omitempty: false

@@ -244,6 +244,212 @@ func init() {
         }
       ]
     },
+    "productActivityHistory": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "created_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "product": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "uint64"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "deleted_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "updated_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "expiry_date": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "name": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "stock": {
+                      "type": "number",
+                      "format": "uint64"
+                    },
+                    "version": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            },
+            "product_id": {
+              "type": "number",
+              "format": "uint64"
+            }
+          }
+        }
+      ]
+    },
+    "productActivityHistoryData": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-omitempty": false
+        },
+        "created_by": {
+          "type": "string",
+          "x-omitempty": false
+        },
+        "product": {
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "uint64"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                },
+                "deleted_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "created_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "deleted_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "updated_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "expiry_date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "name": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "stock": {
+                  "type": "number",
+                  "format": "uint64"
+                },
+                "version": {
+                  "type": "number",
+                  "format": "uint64"
+                }
+              }
+            }
+          ]
+        },
+        "product_id": {
+          "type": "number",
+          "format": "uint64"
+        }
+      }
+    },
     "productData": {
       "type": "object",
       "properties": {
@@ -500,6 +706,212 @@ func init() {
           }
         }
       ]
+    },
+    "productActivityHistory": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "created_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "product": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "uint64"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "deleted_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "updated_by": {
+                      "type": "string",
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "expiry_date": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "name": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "stock": {
+                      "type": "number",
+                      "format": "uint64"
+                    },
+                    "version": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            },
+            "product_id": {
+              "type": "number",
+              "format": "uint64"
+            }
+          }
+        }
+      ]
+    },
+    "productActivityHistoryData": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-omitempty": false
+        },
+        "created_by": {
+          "type": "string",
+          "x-omitempty": false
+        },
+        "product": {
+          "allOf": [
+            {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "uint64"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                },
+                "deleted_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "x-omitempty": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "created_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "deleted_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "updated_by": {
+                  "type": "string",
+                  "x-omitempty": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "expiry_date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "name": {
+                  "type": "string",
+                  "x-omitempty": false
+                },
+                "stock": {
+                  "type": "number",
+                  "format": "uint64"
+                },
+                "version": {
+                  "type": "number",
+                  "format": "uint64"
+                }
+              }
+            }
+          ]
+        },
+        "product_id": {
+          "type": "number",
+          "format": "uint64"
+        }
+      }
     },
     "productData": {
       "type": "object",

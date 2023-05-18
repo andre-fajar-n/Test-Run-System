@@ -38,9 +38,24 @@ func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductP
 		ExpiryDate: expiryDate,
 		CreatedAt:  strfmt.DateTime(now),
 	}
-	data, err = h.productRepo.Create(ctx, data)
+
+	tx := h.runtime.Db.Begin()
+
+	data, err = h.productRepo.Create(ctx, tx, data)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.Create")
+		return nil, err
+	}
+
+	err = h.createProductActivityHistory(ctx, tx, "create", data, nil)
+	if err != nil {
+		logger.Error().Err(err).Msg("error createProductActivityHistory")
+		return nil, err
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		logger.Error().Err(err).Msg("error commit")
 		return nil, err
 	}
 

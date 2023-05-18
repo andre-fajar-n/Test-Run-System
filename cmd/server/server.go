@@ -65,9 +65,14 @@ func Main() {
 
 	rt := runtime.NewRuntime()
 
-	productRepo := repositories.NewRepository(*rt)
+	productRepo := repositories.NewProduct(*rt)
+	productActivityHistoryRepo := repositories.NewProductActivityHistory(*rt)
 
-	h := handlers.NewHandler(*rt, productRepo)
+	h := handlers.NewHandler(
+		*rt,
+		productRepo,
+		productActivityHistoryRepo,
+	)
 
 	rest.Authorization(rt, api)
 	rest.Route(rt, api, h)

@@ -14,23 +14,23 @@ type (
 	}
 
 	Product interface {
-		Create(ctx context.Context, data *models.Product) (*models.Product, error)
+		Create(ctx context.Context, tx *gorm.DB, data *models.Product) (*models.Product, error)
 		NameExist(ctx context.Context, name string) (bool, error)
 	}
 )
 
-func NewRepository(rt runtime.Runtime) Product {
+func NewProduct(rt runtime.Runtime) Product {
 	return &product{
 		rt,
 	}
 }
 
-func (r *product) Create(ctx context.Context, data *models.Product) (*models.Product, error) {
+func (r *product) Create(ctx context.Context, tx *gorm.DB, data *models.Product) (*models.Product, error) {
 	logger := r.runtime.Logger.With().
 		Interface("data", data).
 		Logger()
 
-	err := r.runtime.Db.Model(&data).Create(&data).Error
+	err := tx.Model(&data).Create(&data).Error
 	if err != nil {
 		logger.Error().Err(err).Msg("error query")
 		return nil, err
