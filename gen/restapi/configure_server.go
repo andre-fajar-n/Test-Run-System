@@ -10,8 +10,8 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"go_template/gen/restapi/operations"
-	"go_template/gen/restapi/operations/health"
+	"testrunsystem/gen/restapi/operations"
+	"testrunsystem/gen/restapi/operations/health"
 )
 
 //go:generate swagger generate server --target ../../gen --name Server --spec ../../api/go-template/result.yml --principal models.Principal --exclude-main

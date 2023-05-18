@@ -30,7 +30,7 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
-    "title": "application-tracker",
+    "title": "Test Run System",
     "version": "1.0.0"
   },
   "paths": {
@@ -112,7 +112,7 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
-    "title": "application-tracker",
+    "title": "Test Run System",
     "version": "1.0.0"
   },
   "paths": {

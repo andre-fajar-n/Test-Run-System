@@ -3,10 +3,10 @@
 all: clean spec generate build
 
 validate:
-	swagger validate ./api/go-template/index.yml
+	swagger validate ./api/test-run-system/index.yml
 
 spec:
-	swagger expand --output=./api/go-template/result.yml --format=yaml ./api/go-template/index.yml
+	swagger expand --output=./api/test-run-system/result.yml --format=yaml ./api/test-run-system/index.yml
 
 build: 
 	CGO_ENABLED=0 GOOS=linux go build -v -installsuffix cgo ./cmd/cli
@@ -18,7 +18,7 @@ run-local:
 	go run cmd/cli/main.go api --port=8080 --host=0.0.0.0
 
 doc: validate
-	swagger serve api/go-template/index.yml --no-open --host=0.0.0.0 --port=8080 --base-path=/
+	swagger serve api/test-run-system/index.yml --no-open --host=0.0.0.0 --port=8080 --base-path=/
 
 clean:
 	rm -rf server
@@ -27,7 +27,7 @@ clean:
 	go clean -i .
 
 generate: validate
-	swagger generate server --exclude-main -A server -t gen -f ./api/go-template/result.yml --principal models.Principal
+	swagger generate server --exclude-main -A server -t gen -f ./api/test-run-system/result.yml --principal models.Principal
 
 create-file-migration:
 	go run cmd/cli/main.go migration create $(Arguments)

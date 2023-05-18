@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"go_template/gen/restapi/operations"
+	"testrunsystem/gen/restapi/operations"
 
 	"github.com/go-openapi/runtime"
 )

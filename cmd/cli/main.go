@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"go_template/cmd/server"
-	"go_template/runtime"
 	"log"
 	"os"
+	"testrunsystem/cmd/server"
+	"testrunsystem/runtime"
 
 	"github.com/urfave/cli/v2"
 )
 
 const (
-	appName  = "Golang Template"
+	appName  = "Test Run System"
 	appUsage = "CLI to run this apps"
 )
 

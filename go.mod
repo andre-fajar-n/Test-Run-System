@@ -1,4 +1,4 @@
-module go_template
+module testrunsystem
 
 go 1.20
 

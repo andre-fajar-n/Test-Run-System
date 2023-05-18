@@ -19,7 +19,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"go_template/gen/restapi/operations/health"
+	"testrunsystem/gen/restapi/operations/health"
 )
 
 // NewServerAPI creates a new Server instance

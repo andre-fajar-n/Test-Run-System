@@ -1,10 +1,10 @@
 package rest
 
 import (
-	"go_template/gen/models"
-	"go_template/gen/restapi/operations"
-	"go_template/internal/utils/jwt"
-	"go_template/runtime"
+	"testrunsystem/gen/models"
+	"testrunsystem/gen/restapi/operations"
+	"testrunsystem/internal/utils/jwt"
+	"testrunsystem/runtime"
 	"time"
 
 	"github.com/go-openapi/errors"

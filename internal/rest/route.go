@@ -1,10 +1,10 @@
 package rest
 
 import (
-	"go_template/gen/restapi/operations"
-	"go_template/gen/restapi/operations/health"
-	"go_template/internal/handlers"
-	"go_template/runtime"
+	"testrunsystem/gen/restapi/operations"
+	"testrunsystem/gen/restapi/operations/health"
+	"testrunsystem/internal/handlers"
+	"testrunsystem/runtime"
 
 	"github.com/go-openapi/runtime/middleware"
 )

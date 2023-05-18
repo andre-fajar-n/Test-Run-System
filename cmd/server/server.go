@@ -2,13 +2,13 @@ package server
 
 import (
 	"fmt"
-	"go_template/gen/restapi"
-	"go_template/gen/restapi/operations"
-	"go_template/internal/handlers"
-	"go_template/internal/rest"
-	"go_template/runtime"
 	"log"
 	"os"
+	"testrunsystem/gen/restapi"
+	"testrunsystem/gen/restapi/operations"
+	"testrunsystem/internal/handlers"
+	"testrunsystem/internal/rest"
+	"testrunsystem/runtime"
 
 	"github.com/casualjim/middlewares"
 	"github.com/go-openapi/loads"
@@ -42,8 +42,8 @@ func Main() {
 	defer server.Shutdown()
 
 	parser := flags.NewParser(server, flags.Default)
-	parser.ShortDescription = "go template"
-	parser.LongDescription = "go template"
+	parser.ShortDescription = "test run system"
+	parser.LongDescription = "test run system"
 	server.ConfigureFlags()
 	for _, optsGroup := range api.CommandLineOptionsGroups {
 		_, err := parser.AddGroup(optsGroup.ShortDescription, optsGroup.LongDescription, optsGroup.Options)
@@ -78,7 +78,7 @@ func Main() {
 	}
 
 	handler := alice.New(
-		middlewares.NewRecoveryMW("golang-template", nil),
+		middlewares.NewRecoveryMW("test run system", nil),
 		middlewares.NewProfiler,
 	).Then(api.Serve(nil))
 
