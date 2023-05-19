@@ -1,0 +1,31 @@
+get:
+  tags: [product]
+  summary: "Find Activity History"
+  description: "Find product activity history using pagination"
+  operationId: findActivityHistory
+  security:
+    - authorization: []
+  parameters:
+    - $ref: "./../../../parameters/product.yml#/parameters/product_id"
+    - $ref: "./../../../parameters/common.yml#/parameters/page_pagination"
+    - $ref: "./../../../parameters/common.yml#/parameters/limit_pagination"
+    - $ref: "./../../../parameters/common.yml#/parameters/order_pagination"
+    - $ref: "./../../../parameters/common.yml#/parameters/sort_pagination"
+  responses:
+    200:
+      description: "Success fetch data"
+      schema:
+        allOf:
+          - $ref: "./../../../definitions/common.yml#/definitions/Success"
+          - type: object
+            properties:
+              data:
+                type: array
+                items:
+                  - $ref: "./../../../definitions/product_activity_history.yml#/definitions/productActivityHistoryData"
+              metadata:
+                $ref: "./../../../definitions/common.yml#/definitions/Metadata"
+    default:
+      schema:
+        $ref: "./../../../definitions/common.yml#/definitions/Error"
+      description: Server Error

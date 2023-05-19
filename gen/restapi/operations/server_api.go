@@ -54,6 +54,9 @@ func NewServerAPI(spec *loads.Document) *ServerAPI {
 		ProductDeleteProductHandler: product.DeleteProductHandlerFunc(func(params product.DeleteProductParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation product.DeleteProduct has not yet been implemented")
 		}),
+		ProductFindActivityHistoryHandler: product.FindActivityHistoryHandlerFunc(func(params product.FindActivityHistoryParams, principal *models.Principal) middleware.Responder {
+			return middleware.NotImplemented("operation product.FindActivityHistory has not yet been implemented")
+		}),
 		HealthHealthHandler: health.HealthHandlerFunc(func(params health.HealthParams) middleware.Responder {
 			return middleware.NotImplemented("operation health.Health has not yet been implemented")
 		}),
@@ -126,6 +129,8 @@ type ServerAPI struct {
 	ProductCreateProductHandler product.CreateProductHandler
 	// ProductDeleteProductHandler sets the operation handler for the delete product operation
 	ProductDeleteProductHandler product.DeleteProductHandler
+	// ProductFindActivityHistoryHandler sets the operation handler for the find activity history operation
+	ProductFindActivityHistoryHandler product.FindActivityHistoryHandler
 	// HealthHealthHandler sets the operation handler for the health operation
 	HealthHealthHandler health.HealthHandler
 	// AuthenticationLoginHandler sets the operation handler for the login operation
@@ -225,6 +230,9 @@ func (o *ServerAPI) Validate() error {
 	}
 	if o.ProductDeleteProductHandler == nil {
 		unregistered = append(unregistered, "product.DeleteProductHandler")
+	}
+	if o.ProductFindActivityHistoryHandler == nil {
+		unregistered = append(unregistered, "product.FindActivityHistoryHandler")
 	}
 	if o.HealthHealthHandler == nil {
 		unregistered = append(unregistered, "health.HealthHandler")
@@ -350,6 +358,10 @@ func (o *ServerAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/v1/product/{product_id}"] = product.NewDeleteProduct(o.context, o.ProductDeleteProductHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/v1/product/{product_id}/activity-history"] = product.NewFindActivityHistory(o.context, o.ProductFindActivityHistoryHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -18,6 +19,9 @@ import (
 //
 // swagger:model principal
 type Principal struct {
+
+	// as
+	As []*PrincipalAsItems0 `json:"as"`
 
 	// expired at
 	// Format: date-time
@@ -34,6 +38,10 @@ type Principal struct {
 func (m *Principal) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAs(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateExpiredAt(formats); err != nil {
 		res = append(res, err)
 	}
@@ -41,6 +49,32 @@ func (m *Principal) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Principal) validateAs(formats strfmt.Registry) error {
+	if swag.IsZero(m.As) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.As); i++ {
+		if swag.IsZero(m.As[i]) { // not required
+			continue
+		}
+
+		if m.As[i] != nil {
+			if err := m.As[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("as" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("as" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -56,8 +90,37 @@ func (m *Principal) validateExpiredAt(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this principal based on context it is used
+// ContextValidate validate this principal based on the context it is used
 func (m *Principal) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Principal) contextValidateAs(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.As); i++ {
+
+		if m.As[i] != nil {
+			if err := m.As[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("as" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("as" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -72,6 +135,43 @@ func (m *Principal) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (m *Principal) UnmarshalBinary(b []byte) error {
 	var res Principal
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
+	return nil
+}
+
+// PrincipalAsItems0 principal as items0
+//
+// swagger:model PrincipalAsItems0
+type PrincipalAsItems0 struct {
+
+	// a
+	A string `json:"a,omitempty"`
+}
+
+// Validate validates this principal as items0
+func (m *PrincipalAsItems0) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this principal as items0 based on context it is used
+func (m *PrincipalAsItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *PrincipalAsItems0) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *PrincipalAsItems0) UnmarshalBinary(b []byte) error {
+	var res PrincipalAsItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"testrunsystem/gen/models"
+	"testrunsystem/gen/restapi/operations/product"
 	"time"
 
 	"github.com/go-openapi/strfmt"
@@ -56,4 +57,38 @@ func (h *handler) createProductActivityHistory(
 	}
 
 	return nil
+}
+
+func (h *handler) FindProductActivityHistoryPaginate(ctx context.Context, req *product.FindActivityHistoryParams, p *models.Principal) (
+	[]*product.DataTuple0,
+	*product.FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata,
+	error,
+) {
+	offset := (*req.Page - 1) * *req.Limit
+	data, totalRow, err := h.productActivityHistoryRepo.FindPaginate(ctx, p.UserID, req.ProductID, *req.Limit, offset, *req.Sort, *req.Order)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var output []*product.DataTuple0
+	for _, v := range data {
+		output = append(output, &product.DataTuple0{
+			P0: &product.DataTuple0P0{
+				CreatedAt: &v.CreatedAt,
+				CreatedBy: &v.CreatedBy,
+				Note:      &v.Note,
+				ProductID: &v.ProductID,
+				Type:      &v.Type,
+			},
+		})
+	}
+
+	metadata := product.FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata{
+		Page:      *req.Page,
+		PerPage:   *req.Limit,
+		TotalPage: *totalRow / (*req.Limit),
+		TotalRow:  *totalRow,
+	}
+
+	return output, &metadata, nil
 }

@@ -1,12 +1,7 @@
 definitions:
   productActivityHistoryData:
     type: object
-    properties: 
-      product:
-        $ref: "./../index.yml#/definitions/product"
-      product_id:
-        type: number
-        format: uint64
+    properties:
       note:
         type: string
       type:
@@ -18,3 +13,12 @@ definitions:
       created_by:
         type: string
         x-omitempty: false
+      product_id:
+        type: number
+        format: uint64
+  
+  productActivityHistoryJoinTable:
+    type: object
+    properties:
+      product:
+        $ref: "./../index.yml#/definitions/product"

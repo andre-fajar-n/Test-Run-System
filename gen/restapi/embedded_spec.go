@@ -364,6 +364,147 @@ func init() {
         }
       }
     },
+    "/v1/product/{product_id}/activity-history": {
+      "get": {
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "description": "Find product activity history using pagination",
+        "tags": [
+          "product"
+        ],
+        "summary": "Find Activity History",
+        "operationId": "findActivityHistory",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 1,
+            "description": "default parameter for pagination page",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 10,
+            "description": "default parameter for limit pagination",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "default": "created_at",
+            "description": "default parameter for order pagination",
+            "name": "order",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "default": "desc",
+            "description": "default parameter for sort pagination",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success fetch data",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-omitempty": false
+                            },
+                            "created_by": {
+                              "type": "string",
+                              "x-omitempty": false
+                            },
+                            "note": {
+                              "type": "string"
+                            },
+                            "product_id": {
+                              "type": "number",
+                              "format": "uint64"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "total_row": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/product/{product_id}/stock": {
       "put": {
         "security": [
@@ -517,6 +658,17 @@ func init() {
     "principal": {
       "type": "object",
       "properties": {
+        "as": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "string"
+              }
+            }
+          }
+        },
         "expired_at": {
           "type": "string",
           "format": "date-time"
@@ -700,6 +852,18 @@ func init() {
             "note": {
               "type": "string"
             },
+            "product_id": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
             "product": {
               "allOf": [
                 {
@@ -840,13 +1004,6 @@ func init() {
                   }
                 }
               ]
-            },
-            "product_id": {
-              "type": "number",
-              "format": "uint64"
-            },
-            "type": {
-              "type": "string"
             }
           }
         }
@@ -1263,6 +1420,147 @@ func init() {
         }
       }
     },
+    "/v1/product/{product_id}/activity-history": {
+      "get": {
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
+        "description": "Find product activity history using pagination",
+        "tags": [
+          "product"
+        ],
+        "summary": "Find Activity History",
+        "operationId": "findActivityHistory",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "default": 1,
+            "description": "default parameter for pagination page",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 10,
+            "description": "default parameter for limit pagination",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "default": "created_at",
+            "description": "default parameter for order pagination",
+            "name": "order",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "default": "desc",
+            "description": "default parameter for sort pagination",
+            "name": "sort",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success fetch data",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-omitempty": false
+                            },
+                            "created_by": {
+                              "type": "string",
+                              "x-omitempty": false
+                            },
+                            "note": {
+                              "type": "string"
+                            },
+                            "product_id": {
+                              "type": "number",
+                              "format": "uint64"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        },
+                        "total_page": {
+                          "type": "integer"
+                        },
+                        "total_row": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/product/{product_id}/stock": {
       "put": {
         "security": [
@@ -1414,9 +1712,96 @@ func init() {
     }
   },
   "definitions": {
+    "DataTuple0": {
+      "type": "object",
+      "required": [
+        "P0"
+      ],
+      "properties": {
+        "P0": {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-omitempty": false
+            },
+            "created_by": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "note": {
+              "type": "string"
+            },
+            "product_id": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "DataTuple0P0": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "x-omitempty": false
+        },
+        "created_by": {
+          "type": "string",
+          "x-omitempty": false
+        },
+        "note": {
+          "type": "string"
+        },
+        "product_id": {
+          "type": "number",
+          "format": "uint64"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "FindActivityHistoryOKBodyAO1Metadata": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer"
+        },
+        "per_page": {
+          "type": "integer"
+        },
+        "total_page": {
+          "type": "integer"
+        },
+        "total_row": {
+          "type": "integer"
+        }
+      }
+    },
+    "PrincipalAsItems0": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string"
+        }
+      }
+    },
     "principal": {
       "type": "object",
       "properties": {
+        "as": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PrincipalAsItems0"
+          }
+        },
         "expired_at": {
           "type": "string",
           "format": "date-time"
@@ -1600,6 +1985,18 @@ func init() {
             "note": {
               "type": "string"
             },
+            "product_id": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "type": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
             "product": {
               "allOf": [
                 {
@@ -1740,13 +2137,6 @@ func init() {
                   }
                 }
               ]
-            },
-            "product_id": {
-              "type": "number",
-              "format": "uint64"
-            },
-            "type": {
-              "type": "string"
             }
           }
         }

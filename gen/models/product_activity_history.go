@@ -33,6 +33,12 @@ type ProductActivityHistory struct {
 	// note
 	Note string `json:"note,omitempty"`
 
+	// product id
+	ProductID uint64 `json:"product_id,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
+
 	// product
 	Product struct {
 
@@ -103,12 +109,6 @@ type ProductActivityHistory struct {
 		// version
 		Version uint64 `json:"version,omitempty"`
 	} `json:"product,omitempty"`
-
-	// product id
-	ProductID uint64 `json:"product_id,omitempty"`
-
-	// type
-	Type string `json:"type,omitempty"`
 }
 
 // UnmarshalJSON unmarshals this object from a JSON structure
@@ -131,6 +131,26 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 
 		Note string `json:"note,omitempty"`
 
+		ProductID uint64 `json:"product_id,omitempty"`
+
+		Type string `json:"type,omitempty"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	m.CreatedAt = dataAO1.CreatedAt
+
+	m.CreatedBy = dataAO1.CreatedBy
+
+	m.Note = dataAO1.Note
+
+	m.ProductID = dataAO1.ProductID
+
+	m.Type = dataAO1.Type
+
+	// AO2
+	var dataAO2 struct {
 		Product struct {
 
 			// id
@@ -200,33 +220,19 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 			// version
 			Version uint64 `json:"version,omitempty"`
 		} `json:"product,omitempty"`
-
-		ProductID uint64 `json:"product_id,omitempty"`
-
-		Type string `json:"type,omitempty"`
 	}
-	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+	if err := swag.ReadJSON(raw, &dataAO2); err != nil {
 		return err
 	}
 
-	m.CreatedAt = dataAO1.CreatedAt
-
-	m.CreatedBy = dataAO1.CreatedBy
-
-	m.Note = dataAO1.Note
-
-	m.Product = dataAO1.Product
-
-	m.ProductID = dataAO1.ProductID
-
-	m.Type = dataAO1.Type
+	m.Product = dataAO2.Product
 
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
 func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 2)
+	_parts := make([][]byte, 0, 3)
 
 	var dataAO0 struct {
 		ID *uint64 `json:"id"`
@@ -246,6 +252,27 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 
 		Note string `json:"note,omitempty"`
 
+		ProductID uint64 `json:"product_id,omitempty"`
+
+		Type string `json:"type,omitempty"`
+	}
+
+	dataAO1.CreatedAt = m.CreatedAt
+
+	dataAO1.CreatedBy = m.CreatedBy
+
+	dataAO1.Note = m.Note
+
+	dataAO1.ProductID = m.ProductID
+
+	dataAO1.Type = m.Type
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+	var dataAO2 struct {
 		Product struct {
 
 			// id
@@ -315,29 +342,15 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 			// version
 			Version uint64 `json:"version,omitempty"`
 		} `json:"product,omitempty"`
-
-		ProductID uint64 `json:"product_id,omitempty"`
-
-		Type string `json:"type,omitempty"`
 	}
 
-	dataAO1.CreatedAt = m.CreatedAt
+	dataAO2.Product = m.Product
 
-	dataAO1.CreatedBy = m.CreatedBy
-
-	dataAO1.Note = m.Note
-
-	dataAO1.Product = m.Product
-
-	dataAO1.ProductID = m.ProductID
-
-	dataAO1.Type = m.Type
-
-	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
-	if errAO1 != nil {
-		return nil, errAO1
+	jsonDataAO2, errAO2 := swag.WriteJSON(dataAO2)
+	if errAO2 != nil {
+		return nil, errAO2
 	}
-	_parts = append(_parts, jsonDataAO1)
+	_parts = append(_parts, jsonDataAO2)
 	return swag.ConcatJSON(_parts...), nil
 }
 

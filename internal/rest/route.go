@@ -117,5 +117,22 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 				Message: "success update product stock",
 			})
 		})
+
+		api.ProductFindActivityHistoryHandler = product.FindActivityHistoryHandlerFunc(func(fahp product.FindActivityHistoryParams, p *models.Principal) middleware.Responder {
+			data, metadata, err := apiHandler.FindProductActivityHistoryPaginate(context.Background(), &fahp, p)
+			if err != nil {
+				errRes := rt.GetError(err)
+				return product.NewFindActivityHistoryDefault(int(errRes.Code())).WithPayload(&product.FindActivityHistoryDefaultBody{
+					Code:    int64(errRes.Code()),
+					Message: errRes.Error(),
+				})
+			}
+
+			return product.NewFindActivityHistoryOK().WithPayload(&product.FindActivityHistoryOKBody{
+				Message:  "success fetch data",
+				Data:     data[0],
+				Metadata: metadata,
+			})
+		})
 	}
 }
