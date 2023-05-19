@@ -60,7 +60,7 @@ func (h *handler) createProductActivityHistory(
 }
 
 func (h *handler) FindProductActivityHistoryPaginate(ctx context.Context, req *product.FindActivityHistoryParams, p *models.Principal) (
-	[]*product.DataTuple0,
+	[]*product.FindActivityHistoryOKBodyDataItems0,
 	*product.FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata,
 	error,
 ) {
@@ -70,16 +70,15 @@ func (h *handler) FindProductActivityHistoryPaginate(ctx context.Context, req *p
 		return nil, nil, err
 	}
 
-	var output []*product.DataTuple0
+	var output []*product.FindActivityHistoryOKBodyDataItems0
 	for _, v := range data {
-		output = append(output, &product.DataTuple0{
-			P0: &product.DataTuple0P0{
-				CreatedAt: &v.CreatedAt,
-				CreatedBy: &v.CreatedBy,
-				Note:      &v.Note,
-				ProductID: &v.ProductID,
-				Type:      &v.Type,
-			},
+		output = append(output, &product.FindActivityHistoryOKBodyDataItems0{
+			CreatedAt: v.CreatedAt,
+			CreatedBy: v.CreatedBy,
+			Note:      v.Note,
+			ProductID: v.ProductID,
+			Type:      v.Type,
+			ID:        v.ID,
 		})
 	}
 

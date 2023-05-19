@@ -130,7 +130,7 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 
 			return product.NewFindActivityHistoryOK().WithPayload(&product.FindActivityHistoryOKBody{
 				Message:  "success fetch data",
-				Data:     data[0],
+				Data:     data,
 				Metadata: metadata,
 			})
 		})

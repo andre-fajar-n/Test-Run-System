@@ -22,7 +22,9 @@ get:
               data:
                 type: array
                 items:
-                  - $ref: "./../../../definitions/product_activity_history.yml#/definitions/productActivityHistoryData"
+                  allOf:
+                    - $ref: "./../../../definitions/common.yml#/definitions/ModelIdentifier"
+                    - $ref: "./../../../definitions/product_activity_history.yml#/definitions/productActivityHistoryData"
               metadata:
                 $ref: "./../../../definitions/common.yml#/definitions/Metadata"
     default:

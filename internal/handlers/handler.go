@@ -30,7 +30,7 @@ type (
 
 	producActivitytHandler interface {
 		FindProductActivityHistoryPaginate(ctx context.Context, req *product.FindActivityHistoryParams, p *models.Principal) (
-			[]*product.DataTuple0,
+			[]*product.FindActivityHistoryOKBodyDataItems0,
 			*product.FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata,
 			error,
 		)

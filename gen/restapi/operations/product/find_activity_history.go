@@ -6,10 +6,9 @@ package product
 // Editing this file might prove futile when you re-run the generate command
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
@@ -79,207 +78,6 @@ func (o *FindActivityHistory) ServeHTTP(rw http.ResponseWriter, r *http.Request)
 
 }
 
-// DataTuple0 DataTuple0 a representation of an anonymous Tuple type
-//
-// swagger:model DataTuple0
-type DataTuple0 struct {
-
-	// p0
-	// Required: true
-	P0 *DataTuple0P0 `json:"-"` // custom serializer
-
-}
-
-// UnmarshalJSON unmarshals this tuple type from a JSON array
-func (o *DataTuple0) UnmarshalJSON(raw []byte) error {
-	// stage 1, get the array but just the array
-	var stage1 []json.RawMessage
-	buf := bytes.NewBuffer(raw)
-	dec := json.NewDecoder(buf)
-	dec.UseNumber()
-
-	if err := dec.Decode(&stage1); err != nil {
-		return err
-	}
-
-	// stage 2: hydrates struct members with tuple elements
-	if len(stage1) > 0 {
-		var dataP0 DataTuple0P0
-		buf = bytes.NewBuffer(stage1[0])
-		dec := json.NewDecoder(buf)
-		dec.UseNumber()
-		if err := dec.Decode(&dataP0); err != nil {
-			return err
-		}
-		o.P0 = &dataP0
-
-	}
-
-	return nil
-}
-
-// MarshalJSON marshals this tuple type into a JSON array
-func (o DataTuple0) MarshalJSON() ([]byte, error) {
-	data := []interface{}{
-		o.P0,
-	}
-
-	return json.Marshal(data)
-}
-
-// Validate validates this data tuple0
-func (o *DataTuple0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateP0(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *DataTuple0) validateP0(formats strfmt.Registry) error {
-
-	if err := validate.Required("P0", "body", o.P0); err != nil {
-		return err
-	}
-
-	if o.P0 != nil {
-		if err := o.P0.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("P0")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("P0")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this data tuple0 based on the context it is used
-func (o *DataTuple0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.contextValidateP0(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *DataTuple0) contextValidateP0(ctx context.Context, formats strfmt.Registry) error {
-
-	if o.P0 != nil {
-		if err := o.P0.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("P0")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("P0")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DataTuple0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DataTuple0) UnmarshalBinary(b []byte) error {
-	var res DataTuple0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
-// DataTuple0P0 data tuple0 p0
-//
-// swagger:model DataTuple0P0
-type DataTuple0P0 struct {
-
-	// created at
-	// Format: date-time
-	CreatedAt *strfmt.DateTime `json:"created_at"`
-
-	// created by
-	CreatedBy *string `json:"created_by"`
-
-	// note
-	Note *string `json:"note,omitempty"`
-
-	// product id
-	ProductID *uint64 `json:"product_id,omitempty"`
-
-	// type
-	Type *string `json:"type,omitempty"`
-}
-
-// Validate validates this data tuple0 p0
-func (o *DataTuple0P0) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := o.validateCreatedAt(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (o *DataTuple0P0) validateCreatedAt(formats strfmt.Registry) error {
-	if swag.IsZero(o.CreatedAt) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("P0"+"."+"created_at", "body", "date-time", o.CreatedAt.String(), formats); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// ContextValidate validates this data tuple0 p0 based on context it is used
-func (o *DataTuple0P0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	return nil
-}
-
-// MarshalBinary interface implementation
-func (o *DataTuple0P0) MarshalBinary() ([]byte, error) {
-	if o == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(o)
-}
-
-// UnmarshalBinary interface implementation
-func (o *DataTuple0P0) UnmarshalBinary(b []byte) error {
-	var res DataTuple0P0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*o = res
-	return nil
-}
-
 // FindActivityHistoryDefaultBody find activity history default body
 //
 // swagger:model FindActivityHistoryDefaultBody
@@ -330,7 +128,7 @@ type FindActivityHistoryOKBody struct {
 	Message string `json:"message,omitempty"`
 
 	// data
-	Data *DataTuple0 `json:"data,omitempty"`
+	Data []*FindActivityHistoryOKBodyDataItems0 `json:"data"`
 
 	// metadata
 	Metadata *FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata `json:"metadata,omitempty"`
@@ -350,7 +148,7 @@ func (o *FindActivityHistoryOKBody) UnmarshalJSON(raw []byte) error {
 
 	// FindActivityHistoryOKBodyAO1
 	var dataFindActivityHistoryOKBodyAO1 struct {
-		Data *DataTuple0 `json:"data,omitempty"`
+		Data []*FindActivityHistoryOKBodyDataItems0 `json:"data"`
 
 		Metadata *FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata `json:"metadata,omitempty"`
 	}
@@ -381,7 +179,7 @@ func (o FindActivityHistoryOKBody) MarshalJSON() ([]byte, error) {
 	}
 	_parts = append(_parts, jsonDataFindActivityHistoryOKBodyAO0)
 	var dataFindActivityHistoryOKBodyAO1 struct {
-		Data *DataTuple0 `json:"data,omitempty"`
+		Data []*FindActivityHistoryOKBodyDataItems0 `json:"data"`
 
 		Metadata *FindActivityHistoryOKBodyFindActivityHistoryOKBodyAO1Metadata `json:"metadata,omitempty"`
 	}
@@ -422,15 +220,22 @@ func (o *FindActivityHistoryOKBody) validateData(formats strfmt.Registry) error 
 		return nil
 	}
 
-	if o.Data != nil {
-		if err := o.Data.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findActivityHistoryOK" + "." + "data")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("findActivityHistoryOK" + "." + "data")
-			}
-			return err
+	for i := 0; i < len(o.Data); i++ {
+		if swag.IsZero(o.Data[i]) { // not required
+			continue
 		}
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("findActivityHistoryOK" + "." + "data" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("findActivityHistoryOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -476,15 +281,19 @@ func (o *FindActivityHistoryOKBody) ContextValidate(ctx context.Context, formats
 
 func (o *FindActivityHistoryOKBody) contextValidateData(ctx context.Context, formats strfmt.Registry) error {
 
-	if o.Data != nil {
-		if err := o.Data.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("findActivityHistoryOK" + "." + "data")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("findActivityHistoryOK" + "." + "data")
+	for i := 0; i < len(o.Data); i++ {
+
+		if o.Data[i] != nil {
+			if err := o.Data[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("findActivityHistoryOK" + "." + "data" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("findActivityHistoryOK" + "." + "data" + "." + strconv.Itoa(i))
+				}
+				return err
 			}
-			return err
 		}
+
 	}
 
 	return nil
@@ -517,6 +326,181 @@ func (o *FindActivityHistoryOKBody) MarshalBinary() ([]byte, error) {
 // UnmarshalBinary interface implementation
 func (o *FindActivityHistoryOKBody) UnmarshalBinary(b []byte) error {
 	var res FindActivityHistoryOKBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}
+
+// FindActivityHistoryOKBodyDataItems0 find activity history o k body data items0
+//
+// swagger:model FindActivityHistoryOKBodyDataItems0
+type FindActivityHistoryOKBodyDataItems0 struct {
+
+	// id
+	// Required: true
+	ID *uint64 `json:"id"`
+
+	// created at
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"created_at"`
+
+	// created by
+	CreatedBy string `json:"created_by"`
+
+	// note
+	Note string `json:"note,omitempty"`
+
+	// product id
+	ProductID uint64 `json:"product_id,omitempty"`
+
+	// type
+	Type string `json:"type,omitempty"`
+}
+
+// UnmarshalJSON unmarshals this object from a JSON structure
+func (o *FindActivityHistoryOKBodyDataItems0) UnmarshalJSON(raw []byte) error {
+	// AO0
+	var dataAO0 struct {
+		ID *uint64 `json:"id"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO0); err != nil {
+		return err
+	}
+
+	o.ID = dataAO0.ID
+
+	// AO1
+	var dataAO1 struct {
+		CreatedAt strfmt.DateTime `json:"created_at"`
+
+		CreatedBy string `json:"created_by"`
+
+		Note string `json:"note,omitempty"`
+
+		ProductID uint64 `json:"product_id,omitempty"`
+
+		Type string `json:"type,omitempty"`
+	}
+	if err := swag.ReadJSON(raw, &dataAO1); err != nil {
+		return err
+	}
+
+	o.CreatedAt = dataAO1.CreatedAt
+
+	o.CreatedBy = dataAO1.CreatedBy
+
+	o.Note = dataAO1.Note
+
+	o.ProductID = dataAO1.ProductID
+
+	o.Type = dataAO1.Type
+
+	return nil
+}
+
+// MarshalJSON marshals this object to a JSON structure
+func (o FindActivityHistoryOKBodyDataItems0) MarshalJSON() ([]byte, error) {
+	_parts := make([][]byte, 0, 2)
+
+	var dataAO0 struct {
+		ID *uint64 `json:"id"`
+	}
+
+	dataAO0.ID = o.ID
+
+	jsonDataAO0, errAO0 := swag.WriteJSON(dataAO0)
+	if errAO0 != nil {
+		return nil, errAO0
+	}
+	_parts = append(_parts, jsonDataAO0)
+	var dataAO1 struct {
+		CreatedAt strfmt.DateTime `json:"created_at"`
+
+		CreatedBy string `json:"created_by"`
+
+		Note string `json:"note,omitempty"`
+
+		ProductID uint64 `json:"product_id,omitempty"`
+
+		Type string `json:"type,omitempty"`
+	}
+
+	dataAO1.CreatedAt = o.CreatedAt
+
+	dataAO1.CreatedBy = o.CreatedBy
+
+	dataAO1.Note = o.Note
+
+	dataAO1.ProductID = o.ProductID
+
+	dataAO1.Type = o.Type
+
+	jsonDataAO1, errAO1 := swag.WriteJSON(dataAO1)
+	if errAO1 != nil {
+		return nil, errAO1
+	}
+	_parts = append(_parts, jsonDataAO1)
+	return swag.ConcatJSON(_parts...), nil
+}
+
+// Validate validates this find activity history o k body data items0
+func (o *FindActivityHistoryOKBodyDataItems0) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateCreatedAt(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *FindActivityHistoryOKBodyDataItems0) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", o.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *FindActivityHistoryOKBodyDataItems0) validateCreatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(o.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("created_at", "body", "date-time", o.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this find activity history o k body data items0 based on context it is used
+func (o *FindActivityHistoryOKBodyDataItems0) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *FindActivityHistoryOKBodyDataItems0) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *FindActivityHistoryOKBodyDataItems0) UnmarshalBinary(b []byte) error {
+	var res FindActivityHistoryOKBodyDataItems0
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -438,32 +438,46 @@ func init() {
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "created_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "x-omitempty": false
-                            },
-                            "created_by": {
-                              "type": "string",
-                              "x-omitempty": false
-                            },
-                            "note": {
-                              "type": "string"
-                            },
-                            "product_id": {
-                              "type": "number",
-                              "format": "uint64"
-                            },
-                            "type": {
-                              "type": "string"
+                      "items": {
+                        "allOf": [
+                          {
+                            "type": "object",
+                            "required": [
+                              "id"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "format": "uint64"
+                              }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "x-omitempty": false
+                              },
+                              "created_by": {
+                                "type": "string",
+                                "x-omitempty": false
+                              },
+                              "note": {
+                                "type": "string"
+                              },
+                              "product_id": {
+                                "type": "number",
+                                "format": "uint64"
+                              },
+                              "type": {
+                                "type": "string"
+                              }
                             }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     },
                     "metadata": {
                       "type": "object",
@@ -1494,32 +1508,9 @@ func init() {
                   "properties": {
                     "data": {
                       "type": "array",
-                      "items": [
-                        {
-                          "type": "object",
-                          "properties": {
-                            "created_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "x-omitempty": false
-                            },
-                            "created_by": {
-                              "type": "string",
-                              "x-omitempty": false
-                            },
-                            "note": {
-                              "type": "string"
-                            },
-                            "product_id": {
-                              "type": "number",
-                              "format": "uint64"
-                            },
-                            "type": {
-                              "type": "string"
-                            }
-                          }
-                        }
-                      ]
+                      "items": {
+                        "$ref": "#/definitions/DataItems0"
+                      }
                     },
                     "metadata": {
                       "type": "object",
@@ -1712,13 +1703,21 @@ func init() {
     }
   },
   "definitions": {
-    "DataTuple0": {
-      "type": "object",
-      "required": [
-        "P0"
-      ],
-      "properties": {
-        "P0": {
+    "DataItems0": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
           "type": "object",
           "properties": {
             "created_at": {
@@ -1742,31 +1741,7 @@ func init() {
             }
           }
         }
-      }
-    },
-    "DataTuple0P0": {
-      "type": "object",
-      "properties": {
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "x-omitempty": false
-        },
-        "created_by": {
-          "type": "string",
-          "x-omitempty": false
-        },
-        "note": {
-          "type": "string"
-        },
-        "product_id": {
-          "type": "number",
-          "format": "uint64"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
+      ]
     },
     "FindActivityHistoryOKBodyAO1Metadata": {
       "type": "object",
