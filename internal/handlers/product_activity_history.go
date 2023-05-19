@@ -34,6 +34,8 @@ func (h *handler) createProductActivityHistory(
 		newByte, _ := json.Marshal(newData)
 		oldByte, _ := json.Marshal(oldData)
 		note = fmt.Sprintf("update data from: %v to %v", string(newByte), string(oldByte))
+	case "delete":
+		note = "soft delete data"
 	default:
 		return h.runtime.SetError(http.StatusBadRequest, "invalid product history type: %s", historyType)
 	}

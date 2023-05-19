@@ -18,8 +18,9 @@ type (
 	Product interface {
 		Create(ctx context.Context, tx *gorm.DB, data *models.Product) (*models.Product, error)
 		NameExist(ctx context.Context, name string, productID *uint64) (bool, error)
-		FindBySingleColumn(ctx context.Context, column string, value interface{}) (*models.Product, error)
+		FindBySingleColumn(ctx context.Context, column string, value interface{}, isDeleted bool) (*models.Product, error)
 		Update(ctx context.Context, tx *gorm.DB, data *models.Product) error
+		Delete(ctx context.Context, tx *gorm.DB, data *models.Product) error
 	}
 )
 
@@ -68,14 +69,22 @@ func (r *product) NameExist(ctx context.Context, name string, productID *uint64)
 	return true, nil
 }
 
-func (r *product) FindBySingleColumn(ctx context.Context, column string, value interface{}) (*models.Product, error) {
+func (r *product) FindBySingleColumn(ctx context.Context, column string, value interface{}, isDeleted bool) (*models.Product, error) {
 	logger := r.runtime.Logger.With().
 		Str("column", column).
 		Interface("value", value).
 		Logger()
 
 	productModel := models.Product{}
-	err := r.runtime.Db.Model(&productModel).Where(fmt.Sprintf("%s = ?", column), value).First(&productModel).Error
+	db := r.runtime.Db.Model(&productModel).Where(fmt.Sprintf("%s = ?", column), value)
+
+	if isDeleted {
+		db = db.Where("deleted_at IS NOT NULL")
+	} else {
+		db = db.Where("deleted_at IS NULL")
+	}
+
+	err := db.First(&productModel).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, r.runtime.SetError(http.StatusNotFound, "product not found")
 	}
@@ -91,8 +100,27 @@ func (r *product) Update(ctx context.Context, tx *gorm.DB, data *models.Product)
 	logger := r.runtime.Logger.With().
 		Interface("data", data).
 		Logger()
+	db := tx.Model(&data).Where("id", data.ID).Where("version", data.Version)
 
-	err := tx.Model(&data).Updates(&data).Error
+	// update version
+	data.Version++
+
+	err := db.Updates(&data).Error
+	if err != nil {
+		logger.Error().Err(err).Msg("error query")
+		return err
+	}
+
+	return nil
+}
+
+func (r *product) Delete(ctx context.Context, tx *gorm.DB, data *models.Product) error {
+	logger := r.runtime.Logger.With().
+		Interface("data", data).
+		Logger()
+	db := tx.Model(&data).Where("id", data.ID)
+
+	err := db.Update("deleted_at", data.DeletedAt).Error
 	if err != nil {
 		logger.Error().Err(err).Msg("error query")
 		return err

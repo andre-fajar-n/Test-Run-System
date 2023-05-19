@@ -42,15 +42,15 @@ type ProductActivityHistory struct {
 
 		// created at
 		// Format: date-time
-		CreatedAt strfmt.DateTime `json:"created_at"`
+		CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
 
 		// deleted at
 		// Format: date-time
-		DeletedAt strfmt.DateTime `json:"deleted_at"`
+		DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
 
 		// updated at
 		// Format: date-time
-		UpdatedAt strfmt.DateTime `json:"updated_at"`
+		UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
 
 		// created by
 		CreatedBy string `json:"created_by"`
@@ -110,15 +110,15 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 
 			// created at
 			// Format: date-time
-			CreatedAt strfmt.DateTime `json:"created_at"`
+			CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
 
 			// deleted at
 			// Format: date-time
-			DeletedAt strfmt.DateTime `json:"deleted_at"`
+			DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
 
 			// updated at
 			// Format: date-time
-			UpdatedAt strfmt.DateTime `json:"updated_at"`
+			UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
 
 			// created by
 			CreatedBy string `json:"created_by"`
@@ -196,15 +196,15 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 
 			// created at
 			// Format: date-time
-			CreatedAt strfmt.DateTime `json:"created_at"`
+			CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
 
 			// deleted at
 			// Format: date-time
-			DeletedAt strfmt.DateTime `json:"deleted_at"`
+			DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
 
 			// updated at
 			// Format: date-time
-			UpdatedAt strfmt.DateTime `json:"updated_at"`
+			UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
 
 			// created by
 			CreatedBy string `json:"created_by"`

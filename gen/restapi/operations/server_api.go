@@ -49,6 +49,9 @@ func NewServerAPI(spec *loads.Document) *ServerAPI {
 		ProductCreateProductHandler: product.CreateProductHandlerFunc(func(params product.CreateProductParams) middleware.Responder {
 			return middleware.NotImplemented("operation product.CreateProduct has not yet been implemented")
 		}),
+		ProductDeleteProductHandler: product.DeleteProductHandlerFunc(func(params product.DeleteProductParams) middleware.Responder {
+			return middleware.NotImplemented("operation product.DeleteProduct has not yet been implemented")
+		}),
 		HealthHealthHandler: health.HealthHandlerFunc(func(params health.HealthParams) middleware.Responder {
 			return middleware.NotImplemented("operation health.Health has not yet been implemented")
 		}),
@@ -96,6 +99,8 @@ type ServerAPI struct {
 
 	// ProductCreateProductHandler sets the operation handler for the create product operation
 	ProductCreateProductHandler product.CreateProductHandler
+	// ProductDeleteProductHandler sets the operation handler for the delete product operation
+	ProductDeleteProductHandler product.DeleteProductHandler
 	// HealthHealthHandler sets the operation handler for the health operation
 	HealthHealthHandler health.HealthHandler
 	// ProductUpdateProductHandler sets the operation handler for the update product operation
@@ -182,6 +187,9 @@ func (o *ServerAPI) Validate() error {
 
 	if o.ProductCreateProductHandler == nil {
 		unregistered = append(unregistered, "product.CreateProductHandler")
+	}
+	if o.ProductDeleteProductHandler == nil {
+		unregistered = append(unregistered, "product.DeleteProductHandler")
 	}
 	if o.HealthHealthHandler == nil {
 		unregistered = append(unregistered, "health.HealthHandler")
@@ -283,6 +291,10 @@ func (o *ServerAPI) initHandlerCache() {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/v1/product"] = product.NewCreateProduct(o.context, o.ProductCreateProductHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/v1/product/{product_id}"] = product.NewDeleteProduct(o.context, o.ProductDeleteProductHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}

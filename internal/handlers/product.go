@@ -29,12 +29,13 @@ func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductP
 	}
 
 	now := time.Now().UTC()
+	nowStrfmt := strfmt.DateTime(now)
 
 	data := &models.Product{
 		Name:       *req.Data.Name,
 		Stock:      *req.Data.Stock,
 		ExpiryDate: expiryDate,
-		CreatedAt:  strfmt.DateTime(now),
+		CreatedAt:  &nowStrfmt,
 	}
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
@@ -82,7 +83,7 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 		Interface("data", req.Data).
 		Logger()
 
-	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID)
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
 		return err
@@ -101,12 +102,13 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 	}
 
 	now := time.Now().UTC()
+	nowStrfmt := strfmt.DateTime(now)
 
 	data := existingData
 
 	data.Name = *req.Data.Name
 	data.ExpiryDate = expiryDate
-	data.UpdatedAt = strfmt.DateTime(now)
+	data.UpdatedAt = &nowStrfmt
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
 		err = h.productRepo.Update(ctx, tx, data)
@@ -116,6 +118,44 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 		}
 
 		err = h.createProductActivityHistory(ctx, tx, "update", data, existingData)
+		if err != nil {
+			logger.Error().Err(err).Msg("error createProductActivityHistory")
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		logger.Error().Err(err).Msg("error DB Transaction")
+		return err
+	}
+
+	return nil
+}
+
+func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductParams) error {
+	logger := h.runtime.Logger.With().
+		Uint64("data", req.ProductID).
+		Logger()
+
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
+	if err != nil {
+		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
+		return err
+	}
+
+	now := time.Now().UTC()
+	nowStrfmt := strfmt.DateTime(now)
+
+	existingData.DeletedAt = &nowStrfmt
+	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
+		err = h.productRepo.Delete(ctx, tx, existingData)
+		if err != nil {
+			logger.Error().Err(err).Msg("error productRepo.Delete")
+			return err
+		}
+
+		err = h.createProductActivityHistory(ctx, tx, "delete", existingData, nil)
 		if err != nil {
 			logger.Error().Err(err).Msg("error createProductActivityHistory")
 			return err

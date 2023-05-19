@@ -15,6 +15,7 @@ type (
 	productHandler interface {
 		CreateProduct(ctx context.Context, req *product.CreateProductParams) (*uint64, error)
 		UpdateProduct(ctx context.Context, req *product.UpdateProductParams) error
+		DeleteProduct(ctx context.Context, req *product.DeleteProductParams) error
 	}
 )
 

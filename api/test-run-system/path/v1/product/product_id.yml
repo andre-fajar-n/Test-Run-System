@@ -30,3 +30,22 @@ put:
       schema:
         $ref: './../../../definitions/common.yml#/definitions/Error'
       description: Server Error
+
+delete:
+  tags: [product]
+  summary: 'Delete'
+  description: 'Delete product'
+  operationId: deleteProduct
+  security: []
+  parameters:
+    - $ref: "./../../../parameters/product.yml#/parameters/product_id"
+
+  responses:
+    201:
+      description: 'Success update'
+      schema:
+        $ref: './../../../definitions/common.yml#/definitions/Success'
+    default:
+      description: Server Error
+      schema:
+        $ref: './../../../definitions/common.yml#/definitions/Error'

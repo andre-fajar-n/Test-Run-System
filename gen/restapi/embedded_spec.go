@@ -225,6 +225,54 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [],
+        "description": "Delete product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Delete",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -264,16 +312,22 @@ func init() {
             "created_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:created_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             },
             "deleted_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             },
             "updated_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             }
           }
@@ -367,16 +421,22 @@ func init() {
                     "created_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:created_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     },
                     "deleted_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     },
                     "updated_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     }
                   }
@@ -467,16 +527,22 @@ func init() {
                 "created_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:created_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 },
                 "deleted_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 },
                 "updated_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 }
               }
@@ -768,6 +834,54 @@ func init() {
             }
           }
         }
+      },
+      "delete": {
+        "security": [],
+        "description": "Delete product",
+        "tags": [
+          "product"
+        ],
+        "summary": "Delete",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -807,16 +921,22 @@ func init() {
             "created_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:created_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             },
             "deleted_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             },
             "updated_at": {
               "type": "string",
               "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+              "x-nullable": true,
               "x-omitempty": false
             }
           }
@@ -910,16 +1030,22 @@ func init() {
                     "created_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:created_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     },
                     "deleted_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     },
                     "updated_at": {
                       "type": "string",
                       "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                      "x-nullable": true,
                       "x-omitempty": false
                     }
                   }
@@ -1010,16 +1136,22 @@ func init() {
                 "created_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:created_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 },
                 "deleted_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 },
                 "updated_at": {
                   "type": "string",
                   "format": "date-time",
+                  "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                  "x-nullable": true,
                   "x-omitempty": false
                 }
               }

@@ -51,5 +51,20 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 				Message: "success update product",
 			})
 		})
+
+		api.ProductDeleteProductHandler = product.DeleteProductHandlerFunc(func(dpp product.DeleteProductParams) middleware.Responder {
+			err := apiHandler.DeleteProduct(context.Background(), &dpp)
+			if err != nil {
+				errRes := rt.GetError(err)
+				return product.NewDeleteProductDefault(int(errRes.Code())).WithPayload(&product.DeleteProductDefaultBody{
+					Code:    int64(errRes.Code()),
+					Message: errRes.Error(),
+				})
+			}
+
+			return product.NewDeleteProductCreated().WithPayload(&product.DeleteProductCreatedBody{
+				Message: "success delete product",
+			})
+		})
 	}
 }

@@ -7,8 +7,8 @@ schemes:
     - http
 swagger: "2.0"
 info:
-    title: Test Run System
     version: 1.0.0
+    title: Test Run System
 paths:
     /health:
         get:
@@ -20,12 +20,12 @@ paths:
             operationId: health
             responses:
                 "200":
-                    description: Health Check
                     schema:
                         type: object
                         properties:
                             message:
                                 type: string
+                    description: Health Check
                 default:
                     description: Server Error
                     schema:
@@ -38,31 +38,30 @@ paths:
                                 example: error
     /v1/product:
         post:
-            security: []
             description: Create new product
             tags:
                 - product
             summary: Create New
             operationId: createProduct
             parameters:
-                - schema:
+                - name: data
+                  in: body
+                  schema:
                     type: object
                     required:
                         - name
                         - stock
                     properties:
                         expiry_date:
-                            description: format date DD-MM-YYYY
                             type: string
                             pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
+                            description: format date DD-MM-YYYY
                         name:
                             type: string
                         stock:
                             type: number
                             format: uint64
                             minimum: !!float 1
-                  name: data
-                  in: body
             responses:
                 "201":
                     description: Success create
@@ -87,11 +86,9 @@ paths:
                             message:
                                 type: string
                                 example: error
+            security: []
     /v1/product/{product_id}:
         put:
-            tags:
-                - product
-            summary: Update
             operationId: updateProduct
             parameters:
                 - description: product_id
@@ -101,19 +98,19 @@ paths:
                   type: integer
                   format: uint64
                   default: !!float 1
-                - name: data
-                  in: body
+                - in: body
                   schema:
+                    type: object
                     required:
                         - name
                     properties:
-                        expiry_date:
-                            type: string
-                            pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
-                            description: format date DD-MM-YYYY
                         name:
                             type: string
-                    type: object
+                        expiry_date:
+                            description: format date DD-MM-YYYY
+                            type: string
+                            pattern: ^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$
+                  name: data
             responses:
                 "201":
                     description: Success update
@@ -126,6 +123,40 @@ paths:
                 default:
                     description: Server Error
                     schema:
+                        properties:
+                            code:
+                                type: integer
+                            message:
+                                type: string
+                                example: error
+                        type: object
+            security: []
+            description: Update existing product
+            tags:
+                - product
+            summary: Update
+        delete:
+            summary: Delete
+            operationId: deleteProduct
+            parameters:
+                - required: true
+                  type: integer
+                  format: uint64
+                  default: !!float 1
+                  description: product_id
+                  name: product_id
+                  in: path
+            responses:
+                "201":
+                    description: Success update
+                    schema:
+                        type: object
+                        properties:
+                            message:
+                                type: string
+                default:
+                    description: Server Error
+                    schema:
                         type: object
                         properties:
                             code:
@@ -134,41 +165,49 @@ paths:
                                 type: string
                                 example: error
             security: []
-            description: Update existing product
+            description: Delete product
+            tags:
+                - product
 definitions:
     principal:
         type: object
         properties:
+            user_id:
+                type: number
+                format: uint64
             email:
                 type: string
             expired_at:
                 type: string
-            user_id:
-                type: number
-                format: uint64
     product:
         allOf:
-            - required:
+            - type: object
+              required:
                 - id
               properties:
                 id:
-                    type: integer
                     format: uint64
-              type: object
+                    type: integer
             - type: object
               properties:
-                deleted_at:
+                created_at:
+                    x-go-custom-tag: gorm:"column:created_at"
+                    x-nullable: true
+                    x-omitempty: false
                     type: string
                     format: date-time
+                deleted_at:
                     x-omitempty: false
+                    type: string
+                    format: date-time
+                    x-go-custom-tag: gorm:"column:deleted_at"
+                    x-nullable: true
                 updated_at:
                     type: string
                     format: date-time
+                    x-go-custom-tag: gorm:"column:updated_at"
+                    x-nullable: true
                     x-omitempty: false
-                created_at:
-                    x-omitempty: false
-                    type: string
-                    format: date-time
             - type: object
               properties:
                 created_by:
@@ -182,60 +221,68 @@ definitions:
                     x-omitempty: false
             - type: object
               properties:
-                stock:
-                    format: uint64
-                    type: number
-                version:
-                    type: number
-                    format: uint64
                 expiry_date:
+                    type: string
                     format: date-time
-                    type: string
                 name:
-                    type: string
                     x-omitempty: false
+                    type: string
+                stock:
+                    type: number
+                    format: uint64
+                version:
+                    format: uint64
+                    type: number
     productActivityHistory:
         allOf:
-            - type: object
-              required:
+            - required:
                 - id
               properties:
                 id:
-                    type: integer
                     format: uint64
+                    type: integer
+              type: object
             - type: object
               properties:
+                type:
+                    type: string
                 created_at:
                     type: string
                     format: date-time
                     x-omitempty: false
                 created_by:
-                    x-omitempty: false
                     type: string
+                    x-omitempty: false
                 note:
                     type: string
                 product:
                     allOf:
-                        - type: object
-                          required:
+                        - required:
                             - id
                           properties:
                             id:
                                 type: integer
                                 format: uint64
+                          type: object
                         - type: object
                           properties:
                             created_at:
-                                type: string
                                 format: date-time
+                                x-go-custom-tag: gorm:"column:created_at"
+                                x-nullable: true
                                 x-omitempty: false
+                                type: string
                             deleted_at:
                                 type: string
                                 format: date-time
+                                x-go-custom-tag: gorm:"column:deleted_at"
+                                x-nullable: true
                                 x-omitempty: false
                             updated_at:
                                 type: string
                                 format: date-time
+                                x-go-custom-tag: gorm:"column:updated_at"
+                                x-nullable: true
                                 x-omitempty: false
                         - type: object
                           properties:
@@ -248,7 +295,8 @@ definitions:
                             updated_by:
                                 type: string
                                 x-omitempty: false
-                        - properties:
+                        - type: object
+                          properties:
                             expiry_date:
                                 type: string
                                 format: date-time
@@ -256,51 +304,63 @@ definitions:
                                 type: string
                                 x-omitempty: false
                             stock:
-                                type: number
                                 format: uint64
+                                type: number
                             version:
                                 type: number
                                 format: uint64
-                          type: object
                 product_id:
                     type: number
                     format: uint64
-                type:
-                    type: string
     productActivityHistoryData:
         type: object
         properties:
+            created_at:
+                type: string
+                format: date-time
+                x-omitempty: false
+            created_by:
+                type: string
+                x-omitempty: false
+            note:
+                type: string
             product:
                 allOf:
-                    - properties:
+                    - type: object
+                      required:
+                        - id
+                      properties:
                         id:
                             type: integer
                             format: uint64
-                      type: object
-                      required:
-                        - id
                     - type: object
                       properties:
                         created_at:
-                            format: date-time
-                            x-omitempty: false
                             type: string
+                            format: date-time
+                            x-go-custom-tag: gorm:"column:created_at"
+                            x-nullable: true
+                            x-omitempty: false
                         deleted_at:
+                            x-omitempty: false
                             type: string
                             format: date-time
-                            x-omitempty: false
+                            x-go-custom-tag: gorm:"column:deleted_at"
+                            x-nullable: true
                         updated_at:
-                            type: string
                             format: date-time
+                            x-go-custom-tag: gorm:"column:updated_at"
+                            x-nullable: true
                             x-omitempty: false
+                            type: string
                     - type: object
                       properties:
                         created_by:
-                            type: string
                             x-omitempty: false
+                            type: string
                         deleted_by:
-                            type: string
                             x-omitempty: false
+                            type: string
                         updated_by:
                             type: string
                             x-omitempty: false
@@ -323,21 +383,12 @@ definitions:
                 format: uint64
             type:
                 type: string
-            created_at:
-                type: string
-                format: date-time
-                x-omitempty: false
-            created_by:
-                type: string
-                x-omitempty: false
-            note:
-                type: string
     productData:
         type: object
         properties:
             expiry_date:
-                format: date-time
                 type: string
+                format: date-time
             name:
                 type: string
                 x-omitempty: false
@@ -345,8 +396,8 @@ definitions:
                 format: uint64
                 type: number
             version:
-                format: uint64
                 type: number
+                format: uint64
 securityDefinitions:
     key:
         type: apiKey
