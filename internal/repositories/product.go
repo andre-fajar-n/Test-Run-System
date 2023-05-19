@@ -17,8 +17,8 @@ type (
 
 	Product interface {
 		Create(ctx context.Context, tx *gorm.DB, data *models.Product) (*models.Product, error)
-		NameExist(ctx context.Context, name string, productID *uint64) (bool, error)
-		FindBySingleColumn(ctx context.Context, column string, value interface{}, isDeleted bool) (*models.Product, error)
+		NameExist(ctx context.Context, name string, productID, userID *uint64) (bool, error)
+		FindBySingleColumn(ctx context.Context, columnValues map[string]interface{}, isDeleted bool) (*models.Product, error)
 		Update(ctx context.Context, tx *gorm.DB, data *models.Product) error
 		Delete(ctx context.Context, tx *gorm.DB, data *models.Product) error
 	}
@@ -35,7 +35,7 @@ func (r *product) Create(ctx context.Context, tx *gorm.DB, data *models.Product)
 		Interface("data", data).
 		Logger()
 
-	err := tx.Model(&data).Create(&data).Error
+	err := tx.Model(&data).Select("*").Create(&data).Error
 	if err != nil {
 		logger.Error().Err(err).Msg("error query")
 		return nil, err
@@ -44,7 +44,7 @@ func (r *product) Create(ctx context.Context, tx *gorm.DB, data *models.Product)
 	return data, nil
 }
 
-func (r *product) NameExist(ctx context.Context, name string, productID *uint64) (bool, error) {
+func (r *product) NameExist(ctx context.Context, name string, productID, userID *uint64) (bool, error) {
 	logger := r.runtime.Logger.With().
 		Str("name", name).
 		Logger()
@@ -55,6 +55,10 @@ func (r *product) NameExist(ctx context.Context, name string, productID *uint64)
 
 	if productID != nil {
 		db = db.Where("id <> ?", *productID)
+	}
+
+	if userID != nil {
+		db = db.Where("user_id", *userID)
 	}
 
 	err := db.First(&productModel).Error
@@ -69,14 +73,17 @@ func (r *product) NameExist(ctx context.Context, name string, productID *uint64)
 	return true, nil
 }
 
-func (r *product) FindBySingleColumn(ctx context.Context, column string, value interface{}, isDeleted bool) (*models.Product, error) {
+func (r *product) FindBySingleColumn(ctx context.Context, columnValues map[string]interface{}, isDeleted bool) (*models.Product, error) {
 	logger := r.runtime.Logger.With().
-		Str("column", column).
-		Interface("value", value).
+		Fields(columnValues).
 		Logger()
 
 	productModel := models.Product{}
-	db := r.runtime.Db.Model(&productModel).Where(fmt.Sprintf("%s = ?", column), value)
+	db := r.runtime.Db.Model(&productModel)
+
+	for column, value := range columnValues {
+		db = db.Where(fmt.Sprintf("%s = ?", column), value)
+	}
 
 	if isDeleted {
 		db = db.Where("deleted_at IS NOT NULL")

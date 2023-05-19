@@ -47,6 +47,7 @@ func (h *handler) createProductActivityHistory(
 		Note:      note,
 		Type:      historyType,
 		CreatedAt: strfmt.DateTime(now),
+		CreatedBy: fmt.Sprintf("%d", newData.UserID),
 		ProductID: *newData.ID,
 	})
 	if err != nil {

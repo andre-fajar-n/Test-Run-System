@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testrunsystem/gen/models"
 	"testrunsystem/gen/restapi/operations/product"
@@ -11,12 +12,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductParams) (*uint64, error) {
+func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductParams, p *models.Principal) (*uint64, error) {
 	logger := h.runtime.Logger.With().
 		Interface("data", req.Data).
 		Logger()
 
-	err := h.checkSameName(ctx, *req.Data.Name, nil)
+	err := h.checkSameName(ctx, *req.Data.Name, nil, &p.UserID)
 	if err != nil {
 		logger.Error().Err(err).Msg("error checkSameName")
 		return nil, err
@@ -37,6 +38,8 @@ func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductP
 		Stock:      *req.Data.Stock,
 		ExpiryDate: expiryDate,
 		CreatedAt:  &nowStrfmt,
+		CreatedBy:  fmt.Sprintf("%d", p.UserID),
+		UserID:     p.UserID,
 	}
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
@@ -62,12 +65,12 @@ func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductP
 	return data.ID, nil
 }
 
-func (h *handler) checkSameName(ctx context.Context, name string, productID *uint64) error {
+func (h *handler) checkSameName(ctx context.Context, name string, productID, userID *uint64) error {
 	logger := h.runtime.Logger.With().
 		Str("name", name).
 		Logger()
 
-	isNameExist, err := h.productRepo.NameExist(ctx, name, productID)
+	isNameExist, err := h.productRepo.NameExist(ctx, name, productID, userID)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.NameExist")
 		return err
@@ -79,18 +82,21 @@ func (h *handler) checkSameName(ctx context.Context, name string, productID *uin
 	return nil
 }
 
-func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductParams) error {
+func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductParams, p *models.Principal) error {
 	logger := h.runtime.Logger.With().
 		Interface("data", req.Data).
 		Logger()
 
-	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, map[string]interface{}{
+		"id":      req.ProductID,
+		"user_id": p.UserID,
+	}, false)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
 		return err
 	}
 
-	err = h.checkSameName(ctx, *req.Data.Name, &req.ProductID)
+	err = h.checkSameName(ctx, *req.Data.Name, &req.ProductID, &p.UserID)
 	if err != nil {
 		logger.Error().Err(err).Msg("error checkSameName")
 		return err
@@ -111,6 +117,7 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 	data.Name = *req.Data.Name
 	data.ExpiryDate = expiryDate
 	data.UpdatedAt = &nowStrfmt
+	data.UpdatedBy = fmt.Sprintf("%d", p.UserID)
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
 		err = h.productRepo.Update(ctx, tx, &data)
@@ -135,12 +142,15 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 	return nil
 }
 
-func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductParams) error {
+func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductParams, p *models.Principal) error {
 	logger := h.runtime.Logger.With().
 		Uint64("data", req.ProductID).
 		Logger()
 
-	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, map[string]interface{}{
+		"id":      req.ProductID,
+		"user_id": p.UserID,
+	}, false)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
 		return err
@@ -150,6 +160,7 @@ func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductP
 	nowStrfmt := strfmt.DateTime(now)
 
 	existingData.DeletedAt = &nowStrfmt
+	existingData.DeletedBy = fmt.Sprintf("%d", p.UserID)
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
 		err = h.productRepo.Delete(ctx, tx, existingData)
 		if err != nil {
@@ -173,12 +184,15 @@ func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductP
 	return nil
 }
 
-func (h *handler) UpdateProductStock(ctx context.Context, req *product.UpdateProductStockParams) error {
+func (h *handler) UpdateProductStock(ctx context.Context, req *product.UpdateProductStockParams, p *models.Principal) error {
 	logger := h.runtime.Logger.With().
 		Interface("data", req.Data).
 		Logger()
 
-	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, map[string]interface{}{
+		"id":      req.ProductID,
+		"user_id": p.UserID,
+	}, false)
 	if err != nil {
 		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
 		return err
@@ -197,6 +211,7 @@ func (h *handler) UpdateProductStock(ctx context.Context, req *product.UpdatePro
 	var data models.Product = *existingData
 
 	data.UpdatedAt = &nowStrfmt
+	data.UpdatedBy = fmt.Sprintf("%d", p.UserID)
 	data.Stock = *req.Data.Stock
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {

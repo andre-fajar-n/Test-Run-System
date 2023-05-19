@@ -28,7 +28,7 @@ create index idx_product_lower_name on product (lower(name));
 create table if not exists product_activity_history (
     id serial primary key,
     product_id integer not null,
-    type varchar(10),
+    type varchar(20),
     note varchar(1024),
     created_at timestamptz not null default now(),
     created_by varchar(10),

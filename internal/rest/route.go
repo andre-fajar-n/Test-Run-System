@@ -58,7 +58,7 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 	// product
 	{
 		api.ProductCreateProductHandler = product.CreateProductHandlerFunc(func(cpp product.CreateProductParams, p *models.Principal) middleware.Responder {
-			productID, err := apiHandler.CreateProduct(context.Background(), &cpp)
+			productID, err := apiHandler.CreateProduct(context.Background(), &cpp, p)
 			if err != nil {
 				errRes := rt.GetError(err)
 				return product.NewCreateProductDefault(int(errRes.Code())).WithPayload(&product.CreateProductDefaultBody{
@@ -74,7 +74,7 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 		})
 
 		api.ProductUpdateProductHandler = product.UpdateProductHandlerFunc(func(upp product.UpdateProductParams, p *models.Principal) middleware.Responder {
-			err := apiHandler.UpdateProduct(context.Background(), &upp)
+			err := apiHandler.UpdateProduct(context.Background(), &upp, p)
 			if err != nil {
 				errRes := rt.GetError(err)
 				return product.NewUpdateProductDefault(int(errRes.Code())).WithPayload(&product.UpdateProductDefaultBody{
@@ -89,7 +89,7 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 		})
 
 		api.ProductDeleteProductHandler = product.DeleteProductHandlerFunc(func(dpp product.DeleteProductParams, p *models.Principal) middleware.Responder {
-			err := apiHandler.DeleteProduct(context.Background(), &dpp)
+			err := apiHandler.DeleteProduct(context.Background(), &dpp, p)
 			if err != nil {
 				errRes := rt.GetError(err)
 				return product.NewDeleteProductDefault(int(errRes.Code())).WithPayload(&product.DeleteProductDefaultBody{
@@ -104,7 +104,7 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 		})
 
 		api.ProductUpdateProductStockHandler = product.UpdateProductStockHandlerFunc(func(upsp product.UpdateProductStockParams, p *models.Principal) middleware.Responder {
-			err := apiHandler.UpdateProductStock(context.Background(), &upsp)
+			err := apiHandler.UpdateProductStock(context.Background(), &upsp, p)
 			if err != nil {
 				errRes := rt.GetError(err)
 				return product.NewUpdateProductStockDefault(int(errRes.Code())).WithPayload(&product.UpdateProductStockDefaultBody{

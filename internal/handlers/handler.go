@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"testrunsystem/gen/models"
 	"testrunsystem/gen/restapi/operations/authentication"
 	"testrunsystem/gen/restapi/operations/product"
 	"testrunsystem/internal/repositories"
@@ -15,10 +16,10 @@ type (
 	}
 
 	productHandler interface {
-		CreateProduct(ctx context.Context, req *product.CreateProductParams) (*uint64, error)
-		UpdateProduct(ctx context.Context, req *product.UpdateProductParams) error
-		DeleteProduct(ctx context.Context, req *product.DeleteProductParams) error
-		UpdateProductStock(ctx context.Context, req *product.UpdateProductStockParams) error
+		CreateProduct(ctx context.Context, req *product.CreateProductParams, p *models.Principal) (*uint64, error)
+		UpdateProduct(ctx context.Context, req *product.UpdateProductParams, p *models.Principal) error
+		DeleteProduct(ctx context.Context, req *product.DeleteProductParams, p *models.Principal) error
+		UpdateProductStock(ctx context.Context, req *product.UpdateProductStockParams, p *models.Principal) error
 	}
 
 	userHandler interface {
