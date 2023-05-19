@@ -63,7 +63,7 @@ type ProductActivityHistory struct {
 
 		// expiry date
 		// Format: date-time
-		ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+		ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 		// name
 		Name string `json:"name"`
@@ -131,7 +131,7 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 
 			// expiry date
 			// Format: date-time
-			ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+			ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 			// name
 			Name string `json:"name"`
@@ -217,7 +217,7 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 
 			// expiry date
 			// Format: date-time
-			ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+			ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 			// name
 			Name string `json:"name"`

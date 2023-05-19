@@ -33,7 +33,9 @@ func (h *handler) createProductActivityHistory(
 	case "update":
 		newByte, _ := json.Marshal(newData)
 		oldByte, _ := json.Marshal(oldData)
-		note = fmt.Sprintf("update data from: %v to %v", string(newByte), string(oldByte))
+		note = fmt.Sprintf("update data from: %v to %v", string(oldByte), string(newByte))
+	case "update_stock":
+		note = fmt.Sprintf("update stock from: %d to %d", oldData.Stock, newData.Stock)
 	case "delete":
 		note = "soft delete data"
 	default:

@@ -274,6 +274,76 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product/{product_id}/stock": {
+      "put": {
+        "security": [],
+        "description": "Increasing/decreasing product stock",
+        "tags": [
+          "product"
+        ],
+        "summary": "Update Stock",
+        "operationId": "updateProductStock",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "stock"
+              ],
+              "properties": {
+                "stock": {
+                  "type": "number",
+                  "format": "uint64"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -354,7 +424,9 @@ func init() {
           "properties": {
             "expiry_date": {
               "type": "string",
-              "format": "date-time"
+              "format": "date-time",
+              "x-nullable": true,
+              "x-omitempty": false
             },
             "name": {
               "type": "string",
@@ -463,7 +535,9 @@ func init() {
                   "properties": {
                     "expiry_date": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date-time",
+                      "x-nullable": true,
+                      "x-omitempty": false
                     },
                     "name": {
                       "type": "string",
@@ -491,131 +565,6 @@ func init() {
           }
         }
       ]
-    },
-    "productActivityHistoryData": {
-      "type": "object",
-      "properties": {
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "x-omitempty": false
-        },
-        "created_by": {
-          "type": "string",
-          "x-omitempty": false
-        },
-        "note": {
-          "type": "string"
-        },
-        "product": {
-          "allOf": [
-            {
-              "type": "object",
-              "required": [
-                "id"
-              ],
-              "properties": {
-                "id": {
-                  "type": "integer",
-                  "format": "uint64"
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "created_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:created_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                },
-                "deleted_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:deleted_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                },
-                "updated_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:updated_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "created_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "deleted_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "updated_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "expiry_date": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "name": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "stock": {
-                  "type": "number",
-                  "format": "uint64"
-                },
-                "version": {
-                  "type": "number",
-                  "format": "uint64"
-                }
-              }
-            }
-          ]
-        },
-        "product_id": {
-          "type": "number",
-          "format": "uint64"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
-    },
-    "productData": {
-      "type": "object",
-      "properties": {
-        "expiry_date": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "name": {
-          "type": "string",
-          "x-omitempty": false
-        },
-        "stock": {
-          "type": "number",
-          "format": "uint64"
-        },
-        "version": {
-          "type": "number",
-          "format": "uint64"
-        }
-      }
     }
   },
   "securityDefinitions": {
@@ -883,6 +832,77 @@ func init() {
           }
         }
       }
+    },
+    "/v1/product/{product_id}/stock": {
+      "put": {
+        "security": [],
+        "description": "Increasing/decreasing product stock",
+        "tags": [
+          "product"
+        ],
+        "summary": "Update Stock",
+        "operationId": "updateProductStock",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "uint64",
+            "default": 1,
+            "description": "product_id",
+            "name": "product_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "stock"
+              ],
+              "properties": {
+                "stock": {
+                  "type": "number",
+                  "format": "uint64",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success update",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -963,7 +983,9 @@ func init() {
           "properties": {
             "expiry_date": {
               "type": "string",
-              "format": "date-time"
+              "format": "date-time",
+              "x-nullable": true,
+              "x-omitempty": false
             },
             "name": {
               "type": "string",
@@ -1072,7 +1094,9 @@ func init() {
                   "properties": {
                     "expiry_date": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date-time",
+                      "x-nullable": true,
+                      "x-omitempty": false
                     },
                     "name": {
                       "type": "string",
@@ -1100,131 +1124,6 @@ func init() {
           }
         }
       ]
-    },
-    "productActivityHistoryData": {
-      "type": "object",
-      "properties": {
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "x-omitempty": false
-        },
-        "created_by": {
-          "type": "string",
-          "x-omitempty": false
-        },
-        "note": {
-          "type": "string"
-        },
-        "product": {
-          "allOf": [
-            {
-              "type": "object",
-              "required": [
-                "id"
-              ],
-              "properties": {
-                "id": {
-                  "type": "integer",
-                  "format": "uint64"
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "created_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:created_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                },
-                "deleted_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:deleted_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                },
-                "updated_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "x-go-custom-tag": "gorm:\"column:updated_at\"",
-                  "x-nullable": true,
-                  "x-omitempty": false
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "created_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "deleted_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "updated_by": {
-                  "type": "string",
-                  "x-omitempty": false
-                }
-              }
-            },
-            {
-              "type": "object",
-              "properties": {
-                "expiry_date": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "name": {
-                  "type": "string",
-                  "x-omitempty": false
-                },
-                "stock": {
-                  "type": "number",
-                  "format": "uint64"
-                },
-                "version": {
-                  "type": "number",
-                  "format": "uint64"
-                }
-              }
-            }
-          ]
-        },
-        "product_id": {
-          "type": "number",
-          "format": "uint64"
-        },
-        "type": {
-          "type": "string"
-        }
-      }
-    },
-    "productData": {
-      "type": "object",
-      "properties": {
-        "expiry_date": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "name": {
-          "type": "string",
-          "x-omitempty": false
-        },
-        "stock": {
-          "type": "number",
-          "format": "uint64"
-        },
-        "version": {
-          "type": "number",
-          "format": "uint64"
-        }
-      }
     }
   },
   "securityDefinitions": {

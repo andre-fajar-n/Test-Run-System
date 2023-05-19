@@ -66,5 +66,20 @@ func Route(rt *runtime.Runtime, api *operations.ServerAPI, apiHandler handlers.H
 				Message: "success delete product",
 			})
 		})
+
+		api.ProductUpdateProductStockHandler = product.UpdateProductStockHandlerFunc(func(upsp product.UpdateProductStockParams) middleware.Responder {
+			err := apiHandler.UpdateProductStock(context.Background(), &upsp)
+			if err != nil {
+				errRes := rt.GetError(err)
+				return product.NewUpdateProductStockDefault(int(errRes.Code())).WithPayload(&product.UpdateProductStockDefaultBody{
+					Code:    int64(errRes.Code()),
+					Message: errRes.Error(),
+				})
+			}
+
+			return product.NewUpdateProductStockCreated().WithPayload(&product.UpdateProductStockCreatedBody{
+				Message: "success update product stock",
+			})
+		})
 	}
 }

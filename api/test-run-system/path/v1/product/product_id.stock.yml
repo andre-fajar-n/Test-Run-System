@@ -1,0 +1,30 @@
+put:
+  tags: [product]
+  summary: 'Update Stock'
+  description: 'Increasing/decreasing product stock'
+  operationId: updateProductStock
+  security: []
+  parameters:
+    - $ref: "./../../../parameters/product.yml#/parameters/product_id"
+    - name: data
+      in: body
+      schema:
+        type: object
+        required:
+          - "stock"
+        properties: 
+          stock:
+            type: number
+            format: uint64
+            minimum: 0
+
+  responses:
+    201:
+      description: 'Success update'
+      schema:
+        allOf:
+          - $ref: './../../../definitions/common.yml#/definitions/Success'
+    default:
+      schema:
+        $ref: './../../../definitions/common.yml#/definitions/Error'
+      description: Server Error

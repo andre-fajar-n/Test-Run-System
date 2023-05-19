@@ -22,6 +22,9 @@ paths:
   
   /v1/product/{product_id}:
     $ref: ./path/v1/product/product_id.yml
+  
+  /v1/product/{product_id}/stock:
+    $ref: ./path/v1/product/product_id.stock.yml
 
 definitions:
   principal:
@@ -40,45 +43,9 @@ definitions:
       - $ref: "./definitions/common.yml#/definitions/ModelIdentifier"
       - $ref: "./definitions/common.yml#/definitions/ModelTrackTime"
       - $ref: "./definitions/common.yml#/definitions/ModelTrackBy"
-      - $ref: "#/definitions/productData"
-
-  productData:
-    type: object
-    properties: 
-      name:
-        type: string
-        x-omitempty: false
-      stock:
-        type: number
-        format: uint64
-      version:
-        type: number
-        format: uint64
-      expiry_date:
-        type: string
-        format: date-time
+      - $ref: "./definitions/product.yml#/definitions/productData"
 
   productActivityHistory:
     allOf:
       - $ref: "./definitions/common.yml#/definitions/ModelIdentifier"
-      - $ref: "#/definitions/productActivityHistoryData"
-
-  productActivityHistoryData:
-    type: object
-    properties: 
-      product:
-        $ref: "#/definitions/product"
-      product_id:
-        type: number
-        format: uint64
-      note:
-        type: string
-      type:
-        type: string
-      created_at:
-        type: string
-        format: date-time
-        x-omitempty: false
-      created_by:
-        type: string
-        x-omitempty: false
+      - $ref: "./definitions/product_activity_history.yml#/definitions/productActivityHistoryData"

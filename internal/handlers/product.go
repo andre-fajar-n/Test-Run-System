@@ -22,10 +22,11 @@ func (h *handler) CreateProduct(ctx context.Context, req *product.CreateProductP
 		return nil, err
 	}
 
-	var expiryDate strfmt.DateTime
+	var expiryDate *strfmt.DateTime
 	if req.Data.ExpiryDate != "" {
 		temp, _ := time.Parse("01-02-2006", req.Data.ExpiryDate)
-		expiryDate = strfmt.DateTime(temp)
+		tempExpDate := strfmt.DateTime(temp)
+		expiryDate = &tempExpDate
 	}
 
 	now := time.Now().UTC()
@@ -95,29 +96,30 @@ func (h *handler) UpdateProduct(ctx context.Context, req *product.UpdateProductP
 		return err
 	}
 
-	var expiryDate strfmt.DateTime
+	var expiryDate *strfmt.DateTime = nil
 	if req.Data.ExpiryDate != "" {
 		temp, _ := time.Parse("01-02-2006", req.Data.ExpiryDate)
-		expiryDate = strfmt.DateTime(temp)
+		tempExpDate := strfmt.DateTime(temp)
+		expiryDate = &tempExpDate
 	}
 
 	now := time.Now().UTC()
 	nowStrfmt := strfmt.DateTime(now)
 
-	data := existingData
+	var data models.Product = *existingData
 
 	data.Name = *req.Data.Name
 	data.ExpiryDate = expiryDate
 	data.UpdatedAt = &nowStrfmt
 
 	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
-		err = h.productRepo.Update(ctx, tx, data)
+		err = h.productRepo.Update(ctx, tx, &data)
 		if err != nil {
 			logger.Error().Err(err).Msg("error productRepo.Update")
 			return err
 		}
 
-		err = h.createProductActivityHistory(ctx, tx, "update", data, existingData)
+		err = h.createProductActivityHistory(ctx, tx, "update", &data, existingData)
 		if err != nil {
 			logger.Error().Err(err).Msg("error createProductActivityHistory")
 			return err
@@ -156,6 +158,55 @@ func (h *handler) DeleteProduct(ctx context.Context, req *product.DeleteProductP
 		}
 
 		err = h.createProductActivityHistory(ctx, tx, "delete", existingData, nil)
+		if err != nil {
+			logger.Error().Err(err).Msg("error createProductActivityHistory")
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		logger.Error().Err(err).Msg("error DB Transaction")
+		return err
+	}
+
+	return nil
+}
+
+func (h *handler) UpdateProductStock(ctx context.Context, req *product.UpdateProductStockParams) error {
+	logger := h.runtime.Logger.With().
+		Interface("data", req.Data).
+		Logger()
+
+	existingData, err := h.productRepo.FindBySingleColumn(ctx, "id", req.ProductID, false)
+	if err != nil {
+		logger.Error().Err(err).Msg("error productRepo.FindBySingleColumn")
+		return err
+	}
+
+	now := time.Now().UTC()
+
+	if existingData.ExpiryDate != nil {
+		if time.Time(*existingData.ExpiryDate).Before(now) {
+			return h.runtime.SetError(http.StatusBadRequest, "this product was expired")
+		}
+	}
+
+	nowStrfmt := strfmt.DateTime(now)
+
+	var data models.Product = *existingData
+
+	data.UpdatedAt = &nowStrfmt
+	data.Stock = *req.Data.Stock
+
+	err = h.runtime.Db.Transaction(func(tx *gorm.DB) error {
+		err = h.productRepo.Update(ctx, tx, &data)
+		if err != nil {
+			logger.Error().Err(err).Msg("error productRepo.Update")
+			return err
+		}
+
+		err = h.createProductActivityHistory(ctx, tx, "update_stock", &data, existingData)
 		if err != nil {
 			logger.Error().Err(err).Msg("error createProductActivityHistory")
 			return err

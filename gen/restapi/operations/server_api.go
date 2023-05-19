@@ -58,6 +58,9 @@ func NewServerAPI(spec *loads.Document) *ServerAPI {
 		ProductUpdateProductHandler: product.UpdateProductHandlerFunc(func(params product.UpdateProductParams) middleware.Responder {
 			return middleware.NotImplemented("operation product.UpdateProduct has not yet been implemented")
 		}),
+		ProductUpdateProductStockHandler: product.UpdateProductStockHandlerFunc(func(params product.UpdateProductStockParams) middleware.Responder {
+			return middleware.NotImplemented("operation product.UpdateProductStock has not yet been implemented")
+		}),
 	}
 }
 
@@ -105,6 +108,8 @@ type ServerAPI struct {
 	HealthHealthHandler health.HealthHandler
 	// ProductUpdateProductHandler sets the operation handler for the update product operation
 	ProductUpdateProductHandler product.UpdateProductHandler
+	// ProductUpdateProductStockHandler sets the operation handler for the update product stock operation
+	ProductUpdateProductStockHandler product.UpdateProductStockHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -196,6 +201,9 @@ func (o *ServerAPI) Validate() error {
 	}
 	if o.ProductUpdateProductHandler == nil {
 		unregistered = append(unregistered, "product.UpdateProductHandler")
+	}
+	if o.ProductUpdateProductStockHandler == nil {
+		unregistered = append(unregistered, "product.UpdateProductStockHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -303,6 +311,10 @@ func (o *ServerAPI) initHandlerCache() {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
 	o.handlers["PUT"]["/v1/product/{product_id}"] = product.NewUpdateProduct(o.context, o.ProductUpdateProductHandler)
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/v1/product/{product_id}/stock"] = product.NewUpdateProductStock(o.context, o.ProductUpdateProductStockHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

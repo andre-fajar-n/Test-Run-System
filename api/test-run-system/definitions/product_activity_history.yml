@@ -1,0 +1,20 @@
+definitions:
+  productActivityHistoryData:
+    type: object
+    properties: 
+      product:
+        $ref: "./../index.yml#/definitions/product"
+      product_id:
+        type: number
+        format: uint64
+      note:
+        type: string
+      type:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        x-omitempty: false
+      created_by:
+        type: string
+        x-omitempty: false

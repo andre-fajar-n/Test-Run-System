@@ -46,7 +46,7 @@ type Product struct {
 
 	// expiry date
 	// Format: date-time
-	ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+	ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 	// name
 	Name string `json:"name"`
@@ -108,7 +108,7 @@ func (m *Product) UnmarshalJSON(raw []byte) error {
 
 	// AO3
 	var dataAO3 struct {
-		ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+		ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 		Name string `json:"name"`
 
@@ -185,7 +185,7 @@ func (m Product) MarshalJSON() ([]byte, error) {
 	}
 	_parts = append(_parts, jsonDataAO2)
 	var dataAO3 struct {
-		ExpiryDate strfmt.DateTime `json:"expiry_date,omitempty"`
+		ExpiryDate *strfmt.DateTime `json:"expiry_date"`
 
 		Name string `json:"name"`
 

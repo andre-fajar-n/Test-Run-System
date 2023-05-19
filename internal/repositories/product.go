@@ -100,15 +100,19 @@ func (r *product) Update(ctx context.Context, tx *gorm.DB, data *models.Product)
 	logger := r.runtime.Logger.With().
 		Interface("data", data).
 		Logger()
-	db := tx.Model(&data).Where("id", data.ID).Where("version", data.Version)
+	db := tx.Model(&data).Select("*").Where("version", data.Version)
 
 	// update version
 	data.Version++
 
-	err := db.Updates(&data).Error
-	if err != nil {
+	db = db.Updates(&data)
+	if err := db.Error; err != nil {
 		logger.Error().Err(err).Msg("error query")
 		return err
+	}
+
+	if db.RowsAffected < 1 {
+		return r.runtime.SetError(http.StatusBadRequest, "Ada gangguan sistem. Silahkan muat ulang")
 	}
 
 	return nil
