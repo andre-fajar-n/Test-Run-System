@@ -73,9 +73,90 @@ func init() {
         }
       }
     },
-    "/v1/product": {
+    "/v1/login": {
       "post": {
         "security": [],
+        "description": "Login",
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Login",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "username",
+                "password"
+              ],
+              "properties": {
+                "password": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success login",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "expired_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "headers": {
+              "token": {
+                "type": "string"
+              }
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/product": {
+      "post": {
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Create new product",
         "tags": [
           "product"
@@ -155,7 +236,11 @@ func init() {
     },
     "/v1/product/{product_id}": {
       "put": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Update existing product",
         "tags": [
           "product"
@@ -227,7 +312,11 @@ func init() {
         }
       },
       "delete": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Delete product",
         "tags": [
           "product"
@@ -277,7 +366,11 @@ func init() {
     },
     "/v1/product/{product_id}/stock": {
       "put": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Increasing/decreasing product stock",
         "tags": [
           "product"
@@ -344,21 +437,96 @@ func init() {
           }
         }
       }
+    },
+    "/v1/register": {
+      "post": {
+        "security": [],
+        "description": "Register user",
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Register",
+        "operationId": "register",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "username",
+                "password"
+              ],
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "minLength": 8
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success register",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
     "principal": {
       "type": "object",
       "properties": {
-        "email": {
-          "type": "string"
-        },
         "expired_at": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "user_id": {
           "type": "number",
           "format": "uint64"
+        },
+        "username": {
+          "type": "string"
         }
       }
     },
@@ -433,6 +601,65 @@ func init() {
               "x-omitempty": false
             },
             "stock": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "user": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "uint64"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:created_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "password": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "username": {
+                      "type": "string",
+                      "x-omitempty": false
+                    }
+                  }
+                }
+              ]
+            },
+            "user_id": {
               "type": "number",
               "format": "uint64"
             },
@@ -547,6 +774,65 @@ func init() {
                       "type": "number",
                       "format": "uint64"
                     },
+                    "user": {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [
+                            "id"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "uint64"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:created_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            },
+                            "deleted_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "password": {
+                              "type": "string",
+                              "x-omitempty": false
+                            },
+                            "username": {
+                              "type": "string",
+                              "x-omitempty": false
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "user_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    },
                     "version": {
                       "type": "number",
                       "format": "uint64"
@@ -565,10 +851,65 @@ func init() {
           }
         }
       ]
+    },
+    "user": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:created_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            },
+            "deleted_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "username": {
+              "type": "string",
+              "x-omitempty": false
+            }
+          }
+        }
+      ]
     }
   },
   "securityDefinitions": {
-    "key": {
+    "authorization": {
       "type": "apiKey",
       "name": "Authorization",
       "in": "header"
@@ -631,9 +972,90 @@ func init() {
         }
       }
     },
-    "/v1/product": {
+    "/v1/login": {
       "post": {
         "security": [],
+        "description": "Login",
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Login",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "username",
+                "password"
+              ],
+              "properties": {
+                "password": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success login",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "expired_at": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "headers": {
+              "token": {
+                "type": "string"
+              }
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/product": {
+      "post": {
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Create new product",
         "tags": [
           "product"
@@ -713,7 +1135,11 @@ func init() {
     },
     "/v1/product/{product_id}": {
       "put": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Update existing product",
         "tags": [
           "product"
@@ -785,7 +1211,11 @@ func init() {
         }
       },
       "delete": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Delete product",
         "tags": [
           "product"
@@ -835,7 +1265,11 @@ func init() {
     },
     "/v1/product/{product_id}/stock": {
       "put": {
-        "security": [],
+        "security": [
+          {
+            "authorization": []
+          }
+        ],
         "description": "Increasing/decreasing product stock",
         "tags": [
           "product"
@@ -903,21 +1337,96 @@ func init() {
           }
         }
       }
+    },
+    "/v1/register": {
+      "post": {
+        "security": [],
+        "description": "Register user",
+        "tags": [
+          "authentication"
+        ],
+        "summary": "Register",
+        "operationId": "register",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "username",
+                "password"
+              ],
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "minLength": 8
+                },
+                "username": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success register",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "default": {
+            "description": "Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
     "principal": {
       "type": "object",
       "properties": {
-        "email": {
-          "type": "string"
-        },
         "expired_at": {
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "user_id": {
           "type": "number",
           "format": "uint64"
+        },
+        "username": {
+          "type": "string"
         }
       }
     },
@@ -992,6 +1501,65 @@ func init() {
               "x-omitempty": false
             },
             "stock": {
+              "type": "number",
+              "format": "uint64"
+            },
+            "user": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "uint64"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:created_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    },
+                    "deleted_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                      "x-nullable": true,
+                      "x-omitempty": false
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "password": {
+                      "type": "string",
+                      "x-omitempty": false
+                    },
+                    "username": {
+                      "type": "string",
+                      "x-omitempty": false
+                    }
+                  }
+                }
+              ]
+            },
+            "user_id": {
               "type": "number",
               "format": "uint64"
             },
@@ -1106,6 +1674,65 @@ func init() {
                       "type": "number",
                       "format": "uint64"
                     },
+                    "user": {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "required": [
+                            "id"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "format": "uint64"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:created_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            },
+                            "deleted_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+                              "x-nullable": true,
+                              "x-omitempty": false
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "password": {
+                              "type": "string",
+                              "x-omitempty": false
+                            },
+                            "username": {
+                              "type": "string",
+                              "x-omitempty": false
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "user_id": {
+                      "type": "number",
+                      "format": "uint64"
+                    },
                     "version": {
                       "type": "number",
                       "format": "uint64"
@@ -1124,10 +1751,65 @@ func init() {
           }
         }
       ]
+    },
+    "user": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "uint64"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:created_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            },
+            "deleted_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:deleted_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "x-go-custom-tag": "gorm:\"column:updated_at\"",
+              "x-nullable": true,
+              "x-omitempty": false
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string",
+              "x-omitempty": false
+            },
+            "username": {
+              "type": "string",
+              "x-omitempty": false
+            }
+          }
+        }
+      ]
     }
   },
   "securityDefinitions": {
-    "key": {
+    "authorization": {
       "type": "apiKey",
       "name": "Authorization",
       "in": "header"

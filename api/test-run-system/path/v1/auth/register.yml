@@ -1,39 +1,33 @@
 post:
-  tags: [product]
-  summary: 'Create New'
-  description: 'Create new product'
-  operationId: createProduct
-  security:
-    - authorization: []
+  tags: [authentication]
+  summary: 'Register'
+  description: 'Register user'
+  operationId: register
+  security: []
   parameters:
     - name: data
       in: body
       schema:
         type: object
         required:
-          - "name"
-          - "stock"
+          - "username"
+          - "password"
         properties: 
-          name:
+          username:
             type: string
-          stock:
-            type: number
-            format: uint64
-            minimum: 1
-          expiry_date:
+          password:
             type: string
-            description: format date DD-MM-YYYY
-            pattern: '^(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- /.](19|20)\d\d$'
+            minLength: 8
 
   responses:
     201:
-      description: 'Success create'
+      description: 'Success register'
       schema:
         allOf:
           - $ref: './../../../definitions/common.yml#/definitions/Success'
           - type: object
             properties:
-              product_id:
+              user_id:
                 type: number
                 format: uint64
     default:

@@ -3,7 +3,8 @@ put:
   summary: 'Update Stock'
   description: 'Increasing/decreasing product stock'
   operationId: updateProductStock
-  security: []
+  security:
+    - authorization: []
   parameters:
     - $ref: "./../../../parameters/product.yml#/parameters/product_id"
     - name: data

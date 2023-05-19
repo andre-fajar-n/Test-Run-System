@@ -1,7 +1,12 @@
 definitions:
   productData:
     type: object
-    properties: 
+    properties:
+      user:
+        $ref: "./../index.yml#/definitions/user"
+      user_id:
+        type: number
+        format: uint64
       name:
         type: string
         x-omitempty: false

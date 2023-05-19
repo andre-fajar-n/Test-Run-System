@@ -54,6 +54,35 @@ type Product struct {
 	// stock
 	Stock uint64 `json:"stock,omitempty"`
 
+	// user
+	User struct {
+
+		// id
+		// Required: true
+		ID *uint64 `json:"id"`
+
+		// created at
+		// Format: date-time
+		CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+		// deleted at
+		// Format: date-time
+		DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+		// updated at
+		// Format: date-time
+		UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+		// password
+		Password string `json:"password"`
+
+		// username
+		Username string `json:"username"`
+	} `json:"user,omitempty"`
+
+	// user id
+	UserID uint64 `json:"user_id,omitempty"`
+
 	// version
 	Version uint64 `json:"version,omitempty"`
 }
@@ -114,6 +143,33 @@ func (m *Product) UnmarshalJSON(raw []byte) error {
 
 		Stock uint64 `json:"stock,omitempty"`
 
+		User struct {
+
+			// id
+			// Required: true
+			ID *uint64 `json:"id"`
+
+			// created at
+			// Format: date-time
+			CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+			// deleted at
+			// Format: date-time
+			DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+			// updated at
+			// Format: date-time
+			UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+			// password
+			Password string `json:"password"`
+
+			// username
+			Username string `json:"username"`
+		} `json:"user,omitempty"`
+
+		UserID uint64 `json:"user_id,omitempty"`
+
 		Version uint64 `json:"version,omitempty"`
 	}
 	if err := swag.ReadJSON(raw, &dataAO3); err != nil {
@@ -125,6 +181,10 @@ func (m *Product) UnmarshalJSON(raw []byte) error {
 	m.Name = dataAO3.Name
 
 	m.Stock = dataAO3.Stock
+
+	m.User = dataAO3.User
+
+	m.UserID = dataAO3.UserID
 
 	m.Version = dataAO3.Version
 
@@ -191,6 +251,33 @@ func (m Product) MarshalJSON() ([]byte, error) {
 
 		Stock uint64 `json:"stock,omitempty"`
 
+		User struct {
+
+			// id
+			// Required: true
+			ID *uint64 `json:"id"`
+
+			// created at
+			// Format: date-time
+			CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+			// deleted at
+			// Format: date-time
+			DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+			// updated at
+			// Format: date-time
+			UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+			// password
+			Password string `json:"password"`
+
+			// username
+			Username string `json:"username"`
+		} `json:"user,omitempty"`
+
+		UserID uint64 `json:"user_id,omitempty"`
+
 		Version uint64 `json:"version,omitempty"`
 	}
 
@@ -199,6 +286,10 @@ func (m Product) MarshalJSON() ([]byte, error) {
 	dataAO3.Name = m.Name
 
 	dataAO3.Stock = m.Stock
+
+	dataAO3.User = m.User
+
+	dataAO3.UserID = m.UserID
 
 	dataAO3.Version = m.Version
 
@@ -231,6 +322,10 @@ func (m *Product) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateExpiryDate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUser(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -295,6 +390,31 @@ func (m *Product) validateExpiryDate(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("expiry_date", "body", "date-time", m.ExpiryDate.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Product) validateUser(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.User) { // not required
+		return nil
+	}
+
+	if err := validate.Required("user"+"."+"id", "body", m.User.ID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("user"+"."+"created_at", "body", "date-time", m.User.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("user"+"."+"deleted_at", "body", "date-time", m.User.DeletedAt.String(), formats); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("user"+"."+"updated_at", "body", "date-time", m.User.UpdatedAt.String(), formats); err != nil {
 		return err
 	}
 

@@ -3,7 +3,8 @@ put:
   summary: 'Update'
   description: 'Update existing product'
   operationId: updateProduct
-  security: []
+  security:
+    - authorization: []
   parameters:
     - $ref: "./../../../parameters/product.yml#/parameters/product_id"
     - name: data
@@ -36,7 +37,8 @@ delete:
   summary: 'Delete'
   description: 'Delete product'
   operationId: deleteProduct
-  security: []
+  security:
+    - authorization: []
   parameters:
     - $ref: "./../../../parameters/product.yml#/parameters/product_id"
 

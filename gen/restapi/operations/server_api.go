@@ -19,6 +19,8 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
+	"testrunsystem/gen/models"
+	"testrunsystem/gen/restapi/operations/authentication"
 	"testrunsystem/gen/restapi/operations/health"
 	"testrunsystem/gen/restapi/operations/product"
 )
@@ -46,21 +48,34 @@ func NewServerAPI(spec *loads.Document) *ServerAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		ProductCreateProductHandler: product.CreateProductHandlerFunc(func(params product.CreateProductParams) middleware.Responder {
+		ProductCreateProductHandler: product.CreateProductHandlerFunc(func(params product.CreateProductParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation product.CreateProduct has not yet been implemented")
 		}),
-		ProductDeleteProductHandler: product.DeleteProductHandlerFunc(func(params product.DeleteProductParams) middleware.Responder {
+		ProductDeleteProductHandler: product.DeleteProductHandlerFunc(func(params product.DeleteProductParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation product.DeleteProduct has not yet been implemented")
 		}),
 		HealthHealthHandler: health.HealthHandlerFunc(func(params health.HealthParams) middleware.Responder {
 			return middleware.NotImplemented("operation health.Health has not yet been implemented")
 		}),
-		ProductUpdateProductHandler: product.UpdateProductHandlerFunc(func(params product.UpdateProductParams) middleware.Responder {
+		AuthenticationLoginHandler: authentication.LoginHandlerFunc(func(params authentication.LoginParams) middleware.Responder {
+			return middleware.NotImplemented("operation authentication.Login has not yet been implemented")
+		}),
+		AuthenticationRegisterHandler: authentication.RegisterHandlerFunc(func(params authentication.RegisterParams) middleware.Responder {
+			return middleware.NotImplemented("operation authentication.Register has not yet been implemented")
+		}),
+		ProductUpdateProductHandler: product.UpdateProductHandlerFunc(func(params product.UpdateProductParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation product.UpdateProduct has not yet been implemented")
 		}),
-		ProductUpdateProductStockHandler: product.UpdateProductStockHandlerFunc(func(params product.UpdateProductStockParams) middleware.Responder {
+		ProductUpdateProductStockHandler: product.UpdateProductStockHandlerFunc(func(params product.UpdateProductStockParams, principal *models.Principal) middleware.Responder {
 			return middleware.NotImplemented("operation product.UpdateProductStock has not yet been implemented")
 		}),
+
+		// Applies when the "Authorization" header is set
+		AuthorizationAuth: func(token string) (*models.Principal, error) {
+			return nil, errors.NotImplemented("api key auth (authorization) Authorization from header param [Authorization] has not yet been implemented")
+		},
+		// default authorizer is authorized meaning no requests are blocked
+		APIAuthorizer: security.Authorized(),
 	}
 }
 
@@ -100,12 +115,23 @@ type ServerAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
+	// AuthorizationAuth registers a function that takes a token and returns a principal
+	// it performs authentication based on an api key Authorization provided in the header
+	AuthorizationAuth func(string) (*models.Principal, error)
+
+	// APIAuthorizer provides access control (ACL/RBAC/ABAC) by providing access to the request and authenticated principal
+	APIAuthorizer runtime.Authorizer
+
 	// ProductCreateProductHandler sets the operation handler for the create product operation
 	ProductCreateProductHandler product.CreateProductHandler
 	// ProductDeleteProductHandler sets the operation handler for the delete product operation
 	ProductDeleteProductHandler product.DeleteProductHandler
 	// HealthHealthHandler sets the operation handler for the health operation
 	HealthHealthHandler health.HealthHandler
+	// AuthenticationLoginHandler sets the operation handler for the login operation
+	AuthenticationLoginHandler authentication.LoginHandler
+	// AuthenticationRegisterHandler sets the operation handler for the register operation
+	AuthenticationRegisterHandler authentication.RegisterHandler
 	// ProductUpdateProductHandler sets the operation handler for the update product operation
 	ProductUpdateProductHandler product.UpdateProductHandler
 	// ProductUpdateProductStockHandler sets the operation handler for the update product stock operation
@@ -190,6 +216,10 @@ func (o *ServerAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.AuthorizationAuth == nil {
+		unregistered = append(unregistered, "AuthorizationAuth")
+	}
+
 	if o.ProductCreateProductHandler == nil {
 		unregistered = append(unregistered, "product.CreateProductHandler")
 	}
@@ -198,6 +228,12 @@ func (o *ServerAPI) Validate() error {
 	}
 	if o.HealthHealthHandler == nil {
 		unregistered = append(unregistered, "health.HealthHandler")
+	}
+	if o.AuthenticationLoginHandler == nil {
+		unregistered = append(unregistered, "authentication.LoginHandler")
+	}
+	if o.AuthenticationRegisterHandler == nil {
+		unregistered = append(unregistered, "authentication.RegisterHandler")
 	}
 	if o.ProductUpdateProductHandler == nil {
 		unregistered = append(unregistered, "product.UpdateProductHandler")
@@ -220,12 +256,23 @@ func (o *ServerAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, 
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
 func (o *ServerAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
-	return nil
+	result := make(map[string]runtime.Authenticator)
+	for name := range schemes {
+		switch name {
+		case "authorization":
+			scheme := schemes[name]
+			result[name] = o.APIKeyAuthenticator(scheme.Name, scheme.In, func(token string) (interface{}, error) {
+				return o.AuthorizationAuth(token)
+			})
+
+		}
+	}
+	return result
 }
 
 // Authorizer returns the registered authorizer
 func (o *ServerAPI) Authorizer() runtime.Authorizer {
-	return nil
+	return o.APIAuthorizer
 }
 
 // ConsumersFor gets the consumers for the specified media types.
@@ -307,6 +354,14 @@ func (o *ServerAPI) initHandlerCache() {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
 	o.handlers["GET"]["/health"] = health.NewHealth(o.context, o.HealthHealthHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/v1/login"] = authentication.NewLogin(o.context, o.AuthenticationLoginHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/v1/register"] = authentication.NewRegister(o.context, o.AuthenticationRegisterHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

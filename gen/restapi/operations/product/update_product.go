@@ -14,19 +14,21 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
+
+	"testrunsystem/gen/models"
 )
 
 // UpdateProductHandlerFunc turns a function with the right signature into a update product handler
-type UpdateProductHandlerFunc func(UpdateProductParams) middleware.Responder
+type UpdateProductHandlerFunc func(UpdateProductParams, *models.Principal) middleware.Responder
 
 // Handle executing the request and returning a response
-func (fn UpdateProductHandlerFunc) Handle(params UpdateProductParams) middleware.Responder {
-	return fn(params)
+func (fn UpdateProductHandlerFunc) Handle(params UpdateProductParams, principal *models.Principal) middleware.Responder {
+	return fn(params, principal)
 }
 
 // UpdateProductHandler interface for that can handle valid update product params
 type UpdateProductHandler interface {
-	Handle(UpdateProductParams) middleware.Responder
+	Handle(UpdateProductParams, *models.Principal) middleware.Responder
 }
 
 // NewUpdateProduct creates a new http.Handler for the update product operation
@@ -52,12 +54,25 @@ func (o *UpdateProduct) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		*r = *rCtx
 	}
 	var Params = NewUpdateProductParams()
+	uprinc, aCtx, err := o.Context.Authorize(r, route)
+	if err != nil {
+		o.Context.Respond(rw, r, route.Produces, route, err)
+		return
+	}
+	if aCtx != nil {
+		*r = *aCtx
+	}
+	var principal *models.Principal
+	if uprinc != nil {
+		principal = uprinc.(*models.Principal) // this is really a models.Principal, I promise
+	}
+
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
-	res := o.Handler.Handle(Params) // actually handle the request
+	res := o.Handler.Handle(Params, principal) // actually handle the request
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

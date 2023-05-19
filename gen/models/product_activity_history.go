@@ -71,6 +71,35 @@ type ProductActivityHistory struct {
 		// stock
 		Stock uint64 `json:"stock,omitempty"`
 
+		// user
+		User struct {
+
+			// id
+			// Required: true
+			ID *uint64 `json:"id"`
+
+			// created at
+			// Format: date-time
+			CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+			// deleted at
+			// Format: date-time
+			DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+			// updated at
+			// Format: date-time
+			UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+			// password
+			Password string `json:"password"`
+
+			// username
+			Username string `json:"username"`
+		} `json:"user,omitempty"`
+
+		// user id
+		UserID uint64 `json:"user_id,omitempty"`
+
 		// version
 		Version uint64 `json:"version,omitempty"`
 	} `json:"product,omitempty"`
@@ -138,6 +167,35 @@ func (m *ProductActivityHistory) UnmarshalJSON(raw []byte) error {
 
 			// stock
 			Stock uint64 `json:"stock,omitempty"`
+
+			// user
+			User struct {
+
+				// id
+				// Required: true
+				ID *uint64 `json:"id"`
+
+				// created at
+				// Format: date-time
+				CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+				// deleted at
+				// Format: date-time
+				DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+				// updated at
+				// Format: date-time
+				UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+				// password
+				Password string `json:"password"`
+
+				// username
+				Username string `json:"username"`
+			} `json:"user,omitempty"`
+
+			// user id
+			UserID uint64 `json:"user_id,omitempty"`
 
 			// version
 			Version uint64 `json:"version,omitempty"`
@@ -224,6 +282,35 @@ func (m ProductActivityHistory) MarshalJSON() ([]byte, error) {
 
 			// stock
 			Stock uint64 `json:"stock,omitempty"`
+
+			// user
+			User struct {
+
+				// id
+				// Required: true
+				ID *uint64 `json:"id"`
+
+				// created at
+				// Format: date-time
+				CreatedAt *strfmt.DateTime `json:"created_at" gorm:"column:created_at"`
+
+				// deleted at
+				// Format: date-time
+				DeletedAt *strfmt.DateTime `json:"deleted_at" gorm:"column:deleted_at"`
+
+				// updated at
+				// Format: date-time
+				UpdatedAt *strfmt.DateTime `json:"updated_at" gorm:"column:updated_at"`
+
+				// password
+				Password string `json:"password"`
+
+				// username
+				Username string `json:"username"`
+			} `json:"user,omitempty"`
+
+			// user id
+			UserID uint64 `json:"user_id,omitempty"`
 
 			// version
 			Version uint64 `json:"version,omitempty"`
@@ -321,6 +408,22 @@ func (m *ProductActivityHistory) validateProduct(formats strfmt.Registry) error 
 	}
 
 	if err := validate.FormatOf("product"+"."+"expiry_date", "body", "date-time", m.Product.ExpiryDate.String(), formats); err != nil {
+		return err
+	}
+
+	if err := validate.Required("product"+"."+"user"+"."+"id", "body", m.Product.User.ID); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("product"+"."+"user"+"."+"created_at", "body", "date-time", m.Product.User.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("product"+"."+"user"+"."+"deleted_at", "body", "date-time", m.Product.User.DeletedAt.String(), formats); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("product"+"."+"user"+"."+"updated_at", "body", "date-time", m.Product.User.UpdatedAt.String(), formats); err != nil {
 		return err
 	}
 

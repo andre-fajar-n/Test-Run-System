@@ -65,11 +65,13 @@ func Main() {
 
 	rt := runtime.NewRuntime()
 
+	userRepo := repositories.Newuser(*rt)
 	productRepo := repositories.NewProduct(*rt)
 	productActivityHistoryRepo := repositories.NewProductActivityHistory(*rt)
 
 	h := handlers.NewHandler(
 		*rt,
+		userRepo,
 		productRepo,
 		productActivityHistoryRepo,
 	)
